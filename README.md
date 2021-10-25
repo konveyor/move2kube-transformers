@@ -3,4 +3,4 @@
 
 # Move2Kube Transformers
 
-A repository for sharing custom tranformers for Move2Kube.
+A repository for sharing custom transformers for Move2Kube.
