@@ -15,7 +15,6 @@
 # transform creates a new artifact of type "KubernetesYamlsWithAnnotatedIngress" which
 # has an annotation for ingress-class added to every ingress resource yaml created during
 # transformation
-
 def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
