@@ -11,7 +11,6 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-# load("encoding/yaml", "yaml")
 
 # transform creates a new artifact of type "KubernetesYamlsWithAnnotatedIngress" which
 # has an annotation for ingress-class added to every ingress resource yaml created during
@@ -21,8 +20,6 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
     for v in new_artifacts:
         if v["artifact"] != "KubernetesYamls":
-            continue
-        if v['name'] != "Kubernetes":
             continue
         v["artifact"] = "KubernetesYamlsWithAnnotatedIngress"
         artifacts.append(v)
@@ -34,17 +31,14 @@ def transform(new_artifacts, old_artifacts):
             yamlData = yaml.loads(s)
             if yamlData['kind'] != 'Ingress':
                 continue
-            md = yamlData['metadata']
-            d = {}
-            if 'annotations' in md:
-                d = md['annotations']
-            d["kubernetes.io/ingress.class"] = "haproxy"
-            md["annotations"] = d
-            yamlData['metadata'] = md
+            if 'annotations' not in yamlData['metadata']:
+                yamlData['metadata']['annotations'] = {'kubernetes.io/ingress.class': 'haproxy'}
+            else:
+                yamlData['metadata']['annotations']['kubernetes.io/ingress.class'] = 'haproxy'
             s = yaml.dumps(yamlData)
             fs.write(filePath, s)
             pathMappings.append({'type': 'Default', \
-            'sourcePath': yamlsPath, \
-            'destinationPath': fs.pathjoin("deploy", "yamls")})
+                                'sourcePath': yamlsPath, \
+                                'destinationPath': fs.pathjoin("deploy", "yamls")})
         
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
