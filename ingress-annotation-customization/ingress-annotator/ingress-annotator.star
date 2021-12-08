@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-# transform creates a new artifact of type "KubernetesYamlsWithAnnotatedIngress" which
+# transform creates a new artifact of type "KubernetesYamls" which
 # has an annotation for ingress-class added to every ingress resource yaml created during
 # transformation
 def transform(new_artifacts, old_artifacts):
@@ -21,9 +21,19 @@ def transform(new_artifacts, old_artifacts):
 
     for v in new_artifacts:
         yamlsPath = v["paths"]["KubernetesYamls"][0]
-        v["artifact"] = "KubernetesYamlsWithAnnotatedIngress"
+        serviceName = v["name"]
+        v["artifact"] = "KubernetesYamls"
         artifacts.append(v)
         fileList = fs.readdir(yamlsPath)
+        yamlsBasePath = yamlsPath.split("/")[-1]
+        tempDest = fs.pathjoin(yamlsPath, "k8s-yamls-"+yamlsBasePath)
+        
+        # Create a path template for the service
+        pathTemplateName = serviceName.replace("-", "") + yamlsBasePath
+        tplPathData = {'PathTemplateName': pathTemplateName}
+        pathMappings.append({'type': 'PathTemplate', \
+                            'sourcePath': "{{ OutputRel \"" + yamlsPath + "\" }}", \
+                            'templateConfig': tplPathData})
         for f in fileList:
             filePath = fs.pathjoin(yamlsPath, f)
             s = fs.read(filePath)
@@ -38,6 +48,6 @@ def transform(new_artifacts, old_artifacts):
             fs.write(filePath, s)
             pathMappings.append({'type': 'Default', \
                     'sourcePath': yamlsPath, \
-                    'destinationPath': fs.pathjoin("deploy", "yamls")})
+                    'destinationPath': "{{ ." + pathTemplateName + " }}"})
         
     return {'pathMappings': pathMappings, 'artifacts': artifacts}

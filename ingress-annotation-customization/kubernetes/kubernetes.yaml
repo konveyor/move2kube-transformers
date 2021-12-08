@@ -1,0 +1,19 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: KubernetesForIngressAnnotator
+  labels:
+    move2kube.konveyor.io/inbuilt: false
+spec:
+  class: "Kubernetes"
+  consumes:
+    IR: 
+      merge: true
+  produces:
+    KubernetesYamls:
+      changeTypeTo: "KubernetesYamlsForAnnotation"
+  directoryDetect:
+    levels: 0
+  config:
+    outputPath: "deploy/yamls"
+    ingressName: "{{ .ProjectName }}"

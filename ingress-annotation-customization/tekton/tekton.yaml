@@ -1,0 +1,16 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: TektonForIngressAnnotator
+  labels:
+    move2kube.konveyor.io/inbuilt: false
+spec:
+  class: "Tekton"
+  consumes:
+    IR:
+      merge: true
+  produces:
+    KubernetesYamls:
+      changeTypeTo: "KubernetesYamlsForAnnotation"
+  directoryDetect:
+    levels: 0

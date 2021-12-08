@@ -7,7 +7,7 @@ metadata:
 spec:
   class: "Starlark"
   consumes:
-    KubernetesYamls:
+    KubernetesYamlsForAnnotation:
       merge: true
   config:
     starFile: "ingress-annotator.star"
