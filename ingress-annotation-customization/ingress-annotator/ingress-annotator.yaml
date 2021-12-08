@@ -2,10 +2,12 @@ apiVersion: move2kube.konveyor.io/v1alpha1
 kind: Transformer
 metadata:
   name: IngressAnnotator
+  labels: 
+    move2kube.konveyor.io/inbuilt: false
 spec:
-  mode: "Container"
   class: "Starlark"
   consumes:
-    - "KubernetesYamls"
+    KubernetesYamlsForAnnotation:
+      merge: true
   config:
     starFile: "ingress-annotator.star"
