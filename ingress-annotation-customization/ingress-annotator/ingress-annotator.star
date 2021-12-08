@@ -26,8 +26,6 @@ def transform(new_artifacts, old_artifacts):
         artifacts.append(v)
         fileList = fs.readdir(yamlsPath)
         yamlsBasePath = yamlsPath.split("/")[-1]
-        tempDest = fs.pathjoin(yamlsPath, "k8s-yamls-"+yamlsBasePath)
-        
         # Create a path template for the service
         pathTemplateName = serviceName.replace("-", "") + yamlsBasePath
         tplPathData = {'PathTemplateName': pathTemplateName}
