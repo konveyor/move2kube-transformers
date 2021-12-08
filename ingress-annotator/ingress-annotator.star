@@ -15,16 +15,14 @@
 # transform creates a new artifact of type "KubernetesYamlsWithAnnotatedIngress" which
 # has an annotation for ingress-class added to every ingress resource yaml created during
 # transformation
-
 def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
+
     for v in new_artifacts:
-        if v["artifact"] != "KubernetesYamls":
-            continue
+        yamlsPath = v["paths"]["KubernetesYamls"][0]
         v["artifact"] = "KubernetesYamlsWithAnnotatedIngress"
         artifacts.append(v)
-        yamlsPath = v["paths"]["KubernetesYamls"][0]
         fileList = fs.readdir(yamlsPath)
         for f in fileList:
             filePath = fs.pathjoin(yamlsPath, f)
@@ -39,7 +37,7 @@ def transform(new_artifacts, old_artifacts):
             s = yaml.dumps(yamlData)
             fs.write(filePath, s)
             pathMappings.append({'type': 'Default', \
-                                'sourcePath': yamlsPath, \
-                                'destinationPath': fs.pathjoin("deploy", "yamls")})
+                    'sourcePath': yamlsPath, \
+                    'destinationPath': fs.pathjoin("deploy", "yamls")})
         
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
