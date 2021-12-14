@@ -2,8 +2,10 @@ apiVersion: move2kube.konveyor.io/v1alpha1
 kind: Transformer
 metadata:
   name: CustomParameterizers
+  labels: 
+    move2kube.konveyor.io/inbuilt: false
 spec:
-  mode: "Container"
   class: "Parameterizer"
   consumes:
-    - "KubernetesYamls" # KubernetesYamlsWithAnnotatedIngress
+    KubernetesYamls: # KubernetesYamlsWithAnnotatedIngress
+      merge: true
