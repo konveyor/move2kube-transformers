@@ -1,0 +1,18 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: CustomHelmChartGen
+  labels: 
+    move2kube.konveyor.io/inbuilt: false
+spec:
+  class: "Starlark"
+  directoryDetect:
+    levels: -1
+  consumes:
+    Service:
+      merge: false
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/inbuilt: "true"
+  config:
+    starFile: "customhelmchartgen.star"
