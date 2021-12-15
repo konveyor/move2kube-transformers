@@ -1,0 +1,22 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: KubernetesForFolderChange
+  labels:
+    move2kube.konveyor.io/inbuilt: true
+spec:
+  class: "Kubernetes"
+  directoryDetect:
+    levels: 0
+  consumes:
+    IR:
+      merge: true
+  produces:
+    KubernetesYamls:
+      disabled: false
+  dependency:
+    matchLabels:
+      move2kube.konveyor.io/kubernetesclusterselector: "true"
+  config:
+    outputPath: "yamls-elsewhere"
+    ingressName: "{{ .ProjectName }}"
