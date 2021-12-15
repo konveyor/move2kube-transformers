@@ -6,6 +6,12 @@ metadata:
     move2kube.konveyor.io/inbuilt: false
 spec:
   class: "Starlark"
-  intercepts: ["KubernetesYamls"]
+  consumes:
+    KubernetesYamls: 
+      merge: false
+      mode: "MandatoryPassThrough"
+  produces:
+    KubernetesYamls:
+      disabled: false
   config:
     starFile: "ingress-annotator.star"
