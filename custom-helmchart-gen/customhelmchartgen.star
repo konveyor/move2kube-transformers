@@ -27,7 +27,7 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
     pathTemplate = "{{ SourceRel .ServiceFsPath }}"
     for v in new_artifacts:
-        serviceName = v["name"]
+        serviceName = v["configs"]["Service"]["serviceName"]
         dir = v['paths']['ProjectPath'][0]
         # Create a path template for the service
         pathTemplateName = serviceName.replace("-", "") + 'path'
