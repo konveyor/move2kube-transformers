@@ -18,5 +18,5 @@ spec:
     helmPath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/helm-chart"
     ocTemplatePath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/openshift-template"
     kustomizePath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/kustomize"
-    helmChartName: "{{ .ProjectName }}"
+    projectName: "{{ .ProjectName }}"
 
