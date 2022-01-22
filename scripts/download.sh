@@ -39,7 +39,7 @@ if [ -z "$dir" ] then
     mv "${REPO_NAME}-main/" "${REPO_NAME}"
     rm -rf ${REPO_NAME}.zip
     rm -rf "${REPO_NAME}-main"
-    if [[ zip_flag = 'true' ]] then 
+    if [ zip_flag = 'true' ] then 
         zip -r ${REPO_NAME}.zip ${REPO_NAME}/
         rm -rf "${REPO_NAME}"
     fi
@@ -50,7 +50,7 @@ else
     mv "${REPO_NAME}-main/$dir" "${base_dir}"
     rm -rf ${REPO_NAME}.zip
     rm -rf "${REPO_NAME}-main"
-    if [[ zip_flag = 'true' ]] then 
+    if [ zip_flag = 'true' ] then 
         zip -r ${base_dir}.zip ${base_dir}/
         rm -rf "${base_dir}"
     fi
