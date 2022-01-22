@@ -9,7 +9,8 @@ spec:
   consumes:
     KubernetesYamls: 
       merge: false
-      mode: "MandatoryPassThrough"
+      # Ensures a artifact of this type gets immediately intercepted by this transformer
+      mode: "MandatoryPassThrough" 
   produces:
     KubernetesYamls:
       disabled: false
