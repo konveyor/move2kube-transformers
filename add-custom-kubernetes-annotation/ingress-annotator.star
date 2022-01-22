@@ -19,14 +19,14 @@ def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
 
-    for v in new_artifacts:
-        yamlsPath = v["paths"]["KubernetesYamls"][0]
-        serviceName = v["name"]
-        v["artifact"] = "KubernetesYamls"
-        artifacts.append(v)
+    for a in new_artifacts:
+        yamlsPath = a["paths"]["KubernetesYamls"][0]
+        serviceName = a["name"]
+        artifacts.append(a)
+
         fileList = fs.readdir(yamlsPath)
         yamlsBasePath = yamlsPath.split("/")[-1]
-        # Create a path template for the service
+        # Create a custom path template for the service, whose values gets filled and can be used in other pathmappings
         pathTemplateName = serviceName.replace("-", "") + yamlsBasePath
         tplPathData = {'PathTemplateName': pathTemplateName}
         pathMappings.append({'type': 'PathTemplate', \
