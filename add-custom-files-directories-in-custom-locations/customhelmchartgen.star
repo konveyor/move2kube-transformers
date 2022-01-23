@@ -35,6 +35,9 @@ def transform(new_artifacts, old_artifacts):
         pathMappings.append({'type': 'PathTemplate', \
                             'sourcePath': pathTemplate, \
                             'templateConfig': tplPathData})
+        # Since the helm chart uses the same templating character {{ }} as Golang templates, 
+        # we use `SpecialTemplate` type here where the templating character is <~ ~>.
+        # The `Template` type can be used for all normal cases
         pathMappings.append({'type': 'SpecialTemplate', \
                     'destinationPath': "{{ ." + pathTemplateName + " }}", \
                     'templateConfig': {'ServiceFsPath': dir, 'ServiceName': serviceName}})
