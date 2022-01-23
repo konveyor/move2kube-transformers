@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-FROM quay.io/padmanabhavs/nodejs-12
+FROM quay.io/konveyor/nodejs-12
 COPY . .
 RUN npm install
 {{- if .Build }}
