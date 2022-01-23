@@ -19,4 +19,4 @@ RUN npm install
 RUN npm run build
 {{- end}}
 EXPOSE {{ .Port }}
-CMD npm run start
+CMD sh start-nodejs.sh
