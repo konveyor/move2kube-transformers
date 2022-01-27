@@ -3,7 +3,7 @@ kind: Transformer
 metadata:
   name: AdvancedCustomParameterizer
   labels: 
-    move2kube.konveyor.io/inbuilt: false
+    move2kube.konveyor.io/built-in: false
 spec:
   class: "Parameterizer"
   directoryDetect:

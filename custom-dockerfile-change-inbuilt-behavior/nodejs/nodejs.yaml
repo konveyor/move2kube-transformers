@@ -4,7 +4,7 @@ metadata:
   name: Nodejs-CustomFiles
   labels:
     move2kube.konveyor.io/task: containerization
-    move2kube.konveyor.io/inbuilt: true
+    move2kube.konveyor.io/built-in: true
 spec:
   class: "NodejsDockerfileGenerator"
   directoryDetect:
