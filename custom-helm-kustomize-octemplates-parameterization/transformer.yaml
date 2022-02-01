@@ -7,16 +7,17 @@ metadata:
 spec:
   class: "Parameterizer"
   directoryDetect:
-    levels: 0
+    levels: -1
   consumes:
+    Service:
+      merge: false
+    KubernetesYamlsInSource:
+      merge: false
     KubernetesYamls:
       merge: true
-  override:
-    matchLabels: 
-      move2kube.konveyor.io/name: Parameterizer
   config:
-    helmPath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/helm-chart"
-    ocTemplatePath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/openshift-template"
-    kustomizePath: "{{ OutputRel .YamlsPath }}/../{{ FilePathBase .YamlsPath }}-parameterized/kustomize"
-    projectName: "{{ .ProjectName }}"
+    helmPath: "{{ $pathType := EnvPathType .YamlsPath}}{{ $rel := Rel .YamlsPath }}{{ if eq $pathType \"Source\" }}source/{{end}}{{ $rel }}{{ if ne $rel \".\" }}/..{{end}}/{{ FilePathBase .YamlsPath }}-parameterized/helm-chart"
+    ocTemplatePath: "{{ $pathType := EnvPathType .YamlsPath}}{{ $rel := Rel .YamlsPath }}{{ if eq $pathType \"Source\" }}source/{{end}}{{ $rel }}{{ if ne $rel \".\" }}/..{{end}}/{{ FilePathBase .YamlsPath }}-parameterized/openshift-template"
+    kustomizePath: "{{ $pathType := EnvPathType .YamlsPath}}{{ $rel := Rel .YamlsPath }}{{ if eq $pathType \"Source\" }}source/{{end}}{{ $rel }}{{ if ne $rel \".\" }}/..{{end}}/{{ FilePathBase .YamlsPath }}-parameterized/kustomize"
+    projectName: "{{ if eq .ArtifactType \"KubernetesYamls\" }}{{ .ProjectName }}{{ else }}{{ if eq .ArtifactType \"KubernetesYamlsInSource\" }}{{ .ArtifactName }}{{ else }}{{ .ServiceName }}{{end}}{{end}}"
 
