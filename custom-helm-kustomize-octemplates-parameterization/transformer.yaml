@@ -15,6 +15,9 @@ spec:
       merge: false
     KubernetesYamls:
       merge: true
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/name: Parameterizer
   config:
     helmPath: "{{ $pathType := EnvPathType .YamlsPath}}{{ $rel := Rel .YamlsPath }}{{ if eq $pathType \"Source\" }}source/{{end}}{{ $rel }}{{ if ne $rel \".\" }}/..{{end}}/{{ FilePathBase .YamlsPath }}-parameterized/helm-chart"
     ocTemplatePath: "{{ $pathType := EnvPathType .YamlsPath}}{{ $rel := Rel .YamlsPath }}{{ if eq $pathType \"Source\" }}source/{{end}}{{ $rel }}{{ if ne $rel \".\" }}/..{{end}}/{{ FilePathBase .YamlsPath }}-parameterized/openshift-template"
