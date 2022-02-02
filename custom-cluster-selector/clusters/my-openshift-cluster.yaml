@@ -1,0 +1,604 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: ClusterMetadata
+metadata:
+  name: my-openshift-cluster
+spec:
+  storageClasses:
+    - default
+    - ibmc-block-bronze
+    - ibmc-block-custom
+    - ibmc-block-gold
+    - ibmc-block-retain-bronze
+    - ibmc-block-retain-custom
+    - ibmc-block-retain-gold
+    - ibmc-block-retain-silver
+    - ibmc-block-silver
+    - ibmc-file-bronze
+    - ibmc-file-bronze-gid
+    - ibmc-file-custom
+    - ibmc-file-gold
+    - ibmc-file-gold-gid
+    - ibmc-file-retain-bronze
+    - ibmc-file-retain-custom
+    - ibmc-file-retain-gold
+    - ibmc-file-retain-silver
+    - ibmc-file-silver
+    - ibmc-file-silver-gid
+  apiKindVersionMap:
+    APIRequestCount:
+      - apiserver.openshift.io/v1
+    APIServer:
+      - config.openshift.io/v1
+      - operator.tigera.io/v1
+    APIService:
+      - apiregistration.k8s.io/v1
+      - apiregistration.k8s.io/v1beta1
+    Alertmanager:
+      - monitoring.coreos.com/v1
+    AlertmanagerConfig:
+      - monitoring.coreos.com/v1alpha1
+    AppProject:
+      - argoproj.io/v1alpha1
+    Application:
+      - argoproj.io/v1alpha1
+    AppliedClusterResourceQuota:
+      - quota.openshift.io/v1
+    ArgoCD:
+      - argoproj.io/v1alpha1
+    ArgoCDExport:
+      - argoproj.io/v1alpha1
+    Authentication:
+      - config.openshift.io/v1
+      - operator.openshift.io/v1
+    AuthorizationPolicy:
+      - security.istio.io/v1beta1
+    BGPConfiguration:
+      - crd.projectcalico.org/v1
+    BGPPeer:
+      - crd.projectcalico.org/v1
+    BareMetalHost:
+      - metal3.io/v1alpha1
+    BinaryBuildRequestOptions:
+      - build.openshift.io/v1
+    Binding:
+      - v1
+    BlockAffinity:
+      - crd.projectcalico.org/v1
+    BrokerTemplateInstance:
+      - template.openshift.io/v1
+    Build:
+      - build.openshift.io/v1
+      - config.openshift.io/v1
+    BuildConfig:
+      - build.openshift.io/v1
+    BuildLog:
+      - build.openshift.io/v1
+    BuildRequest:
+      - build.openshift.io/v1
+    CSIDriver:
+      - storage.k8s.io/v1
+      - storage.k8s.io/v1beta1
+    CSINode:
+      - storage.k8s.io/v1
+      - storage.k8s.io/v1beta1
+    CSISnapshotController:
+      - operator.openshift.io/v1
+    CSIStorageCapacity:
+      - storage.k8s.io/v1beta1
+    CatalogSource:
+      - operators.coreos.com/v1alpha1
+    CertificateSigningRequest:
+      - certificates.k8s.io/v1
+      - certificates.k8s.io/v1beta1
+    CloudCredential:
+      - operator.openshift.io/v1
+    ClusterCSIDriver:
+      - operator.openshift.io/v1
+    ClusterInformation:
+      - crd.projectcalico.org/v1
+    ClusterOperator:
+      - config.openshift.io/v1
+    ClusterResourceQuota:
+      - quota.openshift.io/v1
+    ClusterRole:
+      - rbac.authorization.k8s.io/v1
+      - rbac.authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    ClusterRoleBinding:
+      - rbac.authorization.k8s.io/v1
+      - rbac.authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    ClusterServiceVersion:
+      - operators.coreos.com/v1alpha1
+    ClusterTask:
+      - tekton.dev/v1beta1
+      - tekton.dev/v1alpha1
+    ClusterTriggerBinding:
+      - triggers.tekton.dev/v1alpha1
+    ClusterVersion:
+      - config.openshift.io/v1
+    ComponentStatus:
+      - v1
+    Condition:
+      - tekton.dev/v1alpha1
+    Config:
+      - operator.openshift.io/v1
+      - imageregistry.operator.openshift.io/v1
+      - samples.operator.openshift.io/v1
+      - operator.tekton.dev/v1alpha1
+    ConfigMap:
+      - v1
+    Console:
+      - config.openshift.io/v1
+      - operator.openshift.io/v1
+    ConsoleCLIDownload:
+      - console.openshift.io/v1
+    ConsoleExternalLogLink:
+      - console.openshift.io/v1
+    ConsoleLink:
+      - console.openshift.io/v1
+    ConsoleNotification:
+      - console.openshift.io/v1
+    ConsolePlugin:
+      - console.openshift.io/v1alpha1
+    ConsoleQuickStart:
+      - console.openshift.io/v1
+    ConsoleYAMLSample:
+      - console.openshift.io/v1
+    ContainerRuntimeConfig:
+      - machineconfiguration.openshift.io/v1
+    ControllerRevision:
+      - apps/v1
+    CredentialsRequest:
+      - cloudcredential.openshift.io/v1
+    CronJob:
+      - batch/v1
+      - batch/v1beta1
+    CustomResourceDefinition:
+      - apiextensions.k8s.io/v1
+      - apiextensions.k8s.io/v1beta1
+    DNS:
+      - config.openshift.io/v1
+      - operator.openshift.io/v1
+    DNSRecord:
+      - ingress.operator.openshift.io/v1
+    DaemonSet:
+      - apps/v1
+    Deployment:
+      - apps/v1
+    DeploymentConfig:
+      - apps.openshift.io/v1
+    DeploymentConfigRollback:
+      - apps.openshift.io/v1
+    DeploymentLog:
+      - apps.openshift.io/v1
+    DeploymentRequest:
+      - apps.openshift.io/v1
+    DestinationRule:
+      - networking.istio.io/v1alpha3
+    Elasticsearch:
+      - logging.openshift.io/v1
+    EndpointSlice:
+      - discovery.k8s.io/v1
+      - discovery.k8s.io/v1beta1
+    Endpoints:
+      - v1
+    EnvoyFilter:
+      - networking.istio.io/v1alpha3
+    Etcd:
+      - operator.openshift.io/v1
+    Event:
+      - events.k8s.io/v1
+      - events.k8s.io/v1beta1
+      - v1
+    EventListener:
+      - triggers.tekton.dev/v1alpha1
+    Eviction:
+      - v1
+    FeatureGate:
+      - config.openshift.io/v1
+    FelixConfiguration:
+      - crd.projectcalico.org/v1
+    FlowSchema:
+      - flowcontrol.apiserver.k8s.io/v1beta1
+    Gateway:
+      - networking.istio.io/v1alpha3
+    GlobalNetworkPolicy:
+      - crd.projectcalico.org/v1
+    GlobalNetworkSet:
+      - crd.projectcalico.org/v1
+    Group:
+      - user.openshift.io/v1
+    HTTPAPISpec:
+      - config.istio.io/v1alpha2
+    HTTPAPISpecBinding:
+      - config.istio.io/v1alpha2
+    HelmChartRepository:
+      - helm.openshift.io/v1beta1
+    HorizontalPodAutoscaler:
+      - autoscaling/v1
+      - autoscaling/v2beta1
+      - autoscaling/v2beta2
+    HostEndpoint:
+      - crd.projectcalico.org/v1
+    IPAMBlock:
+      - crd.projectcalico.org/v1
+    IPAMConfig:
+      - crd.projectcalico.org/v1
+    IPAMHandle:
+      - crd.projectcalico.org/v1
+    IPPool:
+      - crd.projectcalico.org/v1
+      - whereabouts.cni.cncf.io/v1alpha1
+    Identity:
+      - user.openshift.io/v1
+    Image:
+      - image.openshift.io/v1
+      - config.openshift.io/v1
+      - caching.internal.knative.dev/v1alpha1
+    ImageContentSourcePolicy:
+      - operator.openshift.io/v1alpha1
+    ImagePruner:
+      - imageregistry.operator.openshift.io/v1
+    ImageSet:
+      - operator.tigera.io/v1
+    ImageSignature:
+      - image.openshift.io/v1
+    ImageStream:
+      - image.openshift.io/v1
+    ImageStreamImage:
+      - image.openshift.io/v1
+    ImageStreamImport:
+      - image.openshift.io/v1
+    ImageStreamLayers:
+      - image.openshift.io/v1
+    ImageStreamMapping:
+      - image.openshift.io/v1
+    ImageStreamTag:
+      - image.openshift.io/v1
+    ImageTag:
+      - image.openshift.io/v1
+    Infrastructure:
+      - config.openshift.io/v1
+    Ingress:
+      - networking.k8s.io/v1
+      - networking.k8s.io/v1beta1
+      - extensions/v1beta1
+      - config.openshift.io/v1
+    IngressClass:
+      - networking.k8s.io/v1
+      - networking.k8s.io/v1beta1
+    IngressController:
+      - operator.openshift.io/v1
+    InstallPlan:
+      - operators.coreos.com/v1alpha1
+    Installation:
+      - operator.tigera.io/v1
+    Jaeger:
+      - jaegertracing.io/v1
+    Job:
+      - batch/v1
+    Kiali:
+      - kiali.io/v1alpha1
+    Kibana:
+      - logging.openshift.io/v1
+    KubeAPIServer:
+      - operator.openshift.io/v1
+    KubeControllerManager:
+      - operator.openshift.io/v1
+    KubeControllersConfiguration:
+      - crd.projectcalico.org/v1
+    KubeScheduler:
+      - operator.openshift.io/v1
+    KubeStorageVersionMigrator:
+      - operator.openshift.io/v1
+    KubeletConfig:
+      - machineconfiguration.openshift.io/v1
+    Lease:
+      - coordination.k8s.io/v1
+      - coordination.k8s.io/v1beta1
+    LimitRange:
+      - v1
+    LocalResourceAccessReview:
+      - authorization.openshift.io/v1
+    LocalSubjectAccessReview:
+      - authorization.k8s.io/v1
+      - authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    MachineConfig:
+      - machineconfiguration.openshift.io/v1
+    MachineConfigPool:
+      - machineconfiguration.openshift.io/v1
+    MonitoringDashboard:
+      - monitoring.kiali.io/v1alpha1
+    MutatingWebhookConfiguration:
+      - admissionregistration.k8s.io/v1
+      - admissionregistration.k8s.io/v1beta1
+    Namespace:
+      - v1
+    Network:
+      - config.openshift.io/v1
+      - operator.openshift.io/v1
+    NetworkAttachmentDefinition:
+      - k8s.cni.cncf.io/v1
+    NetworkPolicy:
+      - networking.k8s.io/v1
+      - crd.projectcalico.org/v1
+    NetworkSet:
+      - crd.projectcalico.org/v1
+    Node:
+      - v1
+    NodeMetrics:
+      - metrics.k8s.io/v1beta1
+    NodeProxyOptions:
+      - v1
+    OAuth:
+      - config.openshift.io/v1
+    OAuthAccessToken:
+      - oauth.openshift.io/v1
+    OAuthAuthorizeToken:
+      - oauth.openshift.io/v1
+    OAuthClient:
+      - oauth.openshift.io/v1
+    OAuthClientAuthorization:
+      - oauth.openshift.io/v1
+    OpenShiftAPIServer:
+      - operator.openshift.io/v1
+    OpenShiftControllerManager:
+      - operator.openshift.io/v1
+    Operator:
+      - operators.coreos.com/v1
+    OperatorCondition:
+      - operators.coreos.com/v2
+      - operators.coreos.com/v1
+    OperatorGroup:
+      - operators.coreos.com/v1
+      - operators.coreos.com/v1alpha2
+    OperatorHub:
+      - config.openshift.io/v1
+    OperatorPKI:
+      - network.operator.openshift.io/v1
+    PersistentVolume:
+      - v1
+    PersistentVolumeClaim:
+      - v1
+    Pipeline:
+      - tekton.dev/v1beta1
+      - tekton.dev/v1alpha1
+    PipelineResource:
+      - tekton.dev/v1alpha1
+    PipelineRun:
+      - tekton.dev/v1beta1
+      - tekton.dev/v1alpha1
+    Pod:
+      - v1
+    PodAttachOptions:
+      - v1
+    PodDisruptionBudget:
+      - policy/v1
+      - policy/v1beta1
+    PodExecOptions:
+      - v1
+    PodMetrics:
+      - metrics.k8s.io/v1beta1
+    PodMonitor:
+      - monitoring.coreos.com/v1
+    PodPortForwardOptions:
+      - v1
+    PodProxyOptions:
+      - v1
+    PodSecurityPolicy:
+      - policy/v1beta1
+    PodSecurityPolicyReview:
+      - security.openshift.io/v1
+    PodSecurityPolicySelfSubjectReview:
+      - security.openshift.io/v1
+    PodSecurityPolicySubjectReview:
+      - security.openshift.io/v1
+    PodTemplate:
+      - v1
+    Policy:
+      - authentication.istio.io/v1alpha1
+    PriorityClass:
+      - scheduling.k8s.io/v1
+      - scheduling.k8s.io/v1beta1
+    PriorityLevelConfiguration:
+      - flowcontrol.apiserver.k8s.io/v1beta1
+    Probe:
+      - monitoring.coreos.com/v1
+    Profile:
+      - tuned.openshift.io/v1
+    Project:
+      - project.openshift.io/v1
+      - config.openshift.io/v1
+    ProjectRequest:
+      - project.openshift.io/v1
+    Prometheus:
+      - monitoring.coreos.com/v1
+    PrometheusConnector:
+      - skydive-group.example.com/v1
+      - skydive.example.com/v1
+    PrometheusRule:
+      - monitoring.coreos.com/v1
+    Provisioning:
+      - metal3.io/v1alpha1
+    Proxy:
+      - config.openshift.io/v1
+    QuotaSpec:
+      - config.istio.io/v1alpha2
+    QuotaSpecBinding:
+      - config.istio.io/v1alpha2
+    RBACSync:
+      - ibm.com/v1alpha1
+    RangeAllocation:
+      - security.openshift.io/v1
+      - security.internal.openshift.io/v1
+    RbacConfig:
+      - rbac.istio.io/v1alpha1
+    ReplicaSet:
+      - apps/v1
+    ReplicationController:
+      - v1
+    ResourceAccessReview:
+      - authorization.openshift.io/v1
+    ResourceQuota:
+      - v1
+    Role:
+      - rbac.authorization.k8s.io/v1
+      - rbac.authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    RoleBinding:
+      - rbac.authorization.k8s.io/v1
+      - rbac.authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    RoleBindingRestriction:
+      - authorization.openshift.io/v1
+    Route:
+      - route.openshift.io/v1
+    RuntimeClass:
+      - node.k8s.io/v1
+      - node.k8s.io/v1beta1
+    Scale:
+      - apps/v1
+      - apps.openshift.io/v1
+      - operator.openshift.io/v1
+      - v1
+    Scheduler:
+      - config.openshift.io/v1
+    Secret:
+      - v1
+    SecretList:
+      - image.openshift.io/v1
+    SecurityContextConstraints:
+      - security.openshift.io/v1
+    SelfSubjectAccessReview:
+      - authorization.k8s.io/v1
+      - authorization.k8s.io/v1beta1
+    SelfSubjectRulesReview:
+      - authorization.k8s.io/v1
+      - authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    Service:
+      - v1
+    ServiceAccount:
+      - v1
+    ServiceCA:
+      - operator.openshift.io/v1
+    ServiceCatalogAPIServer:
+      - operator.openshift.io/v1
+    ServiceCatalogControllerManager:
+      - operator.openshift.io/v1
+    ServiceEntry:
+      - networking.istio.io/v1alpha3
+    ServiceMeshControlPlane:
+      - maistra.io/v2
+      - maistra.io/v1
+    ServiceMeshMember:
+      - maistra.io/v1
+    ServiceMeshMemberRoll:
+      - maistra.io/v1
+    ServiceMeshPolicy:
+      - authentication.maistra.io/v1
+    ServiceMeshRbacConfig:
+      - rbac.maistra.io/v1
+    ServiceMonitor:
+      - monitoring.coreos.com/v1
+    ServiceProxyOptions:
+      - v1
+    ServiceRole:
+      - rbac.istio.io/v1alpha1
+    ServiceRoleBinding:
+      - rbac.istio.io/v1alpha1
+    Sidecar:
+      - networking.istio.io/v1alpha3
+    Skydive:
+      - skydive-group.example.com/v1
+      - skydive.example.com/v1
+      - config.skydive.network/v1alpha1
+    SkydiveFlowExporter:
+      - skydive-group.example.com/v1
+      - skydive.example.com/v1
+    SkydiveSuite:
+      - skydive.example.com/v1
+    StatefulSet:
+      - apps/v1
+    Storage:
+      - operator.openshift.io/v1
+    StorageClass:
+      - storage.k8s.io/v1
+      - storage.k8s.io/v1beta1
+    StorageState:
+      - migration.k8s.io/v1alpha1
+    StorageVersionMigration:
+      - migration.k8s.io/v1alpha1
+    SubjectAccessReview:
+      - authorization.k8s.io/v1
+      - authorization.k8s.io/v1beta1
+      - authorization.openshift.io/v1
+    SubjectRulesReview:
+      - authorization.openshift.io/v1
+    Subscription:
+      - operators.coreos.com/v1alpha1
+    Task:
+      - tekton.dev/v1beta1
+      - tekton.dev/v1alpha1
+    TaskRun:
+      - tekton.dev/v1beta1
+      - tekton.dev/v1alpha1
+    Template:
+      - template.openshift.io/v1
+    TemplateInstance:
+      - template.openshift.io/v1
+    TemplateServiceBroker:
+      - osb.openshift.io/v1
+    ThanosRuler:
+      - monitoring.coreos.com/v1
+    TigeraStatus:
+      - operator.tigera.io/v1
+    TokenRequest:
+      - v1
+    TokenReview:
+      - authentication.k8s.io/v1
+      - authentication.k8s.io/v1beta1
+      - oauth.openshift.io/v1
+    TriggerBinding:
+      - triggers.tekton.dev/v1alpha1
+    TriggerTemplate:
+      - triggers.tekton.dev/v1alpha1
+    Tuned:
+      - tuned.openshift.io/v1
+    User:
+      - user.openshift.io/v1
+    UserIdentityMapping:
+      - user.openshift.io/v1
+    UserOAuthAccessToken:
+      - oauth.openshift.io/v1
+    ValidatingWebhookConfiguration:
+      - admissionregistration.k8s.io/v1
+      - admissionregistration.k8s.io/v1beta1
+    VirtualService:
+      - networking.istio.io/v1alpha3
+    VolumeAttachment:
+      - storage.k8s.io/v1
+      - storage.k8s.io/v1beta1
+    VolumeSnapshot:
+      - snapshot.storage.k8s.io/v1
+      - snapshot.storage.k8s.io/v1beta1
+    VolumeSnapshotClass:
+      - snapshot.storage.k8s.io/v1
+      - snapshot.storage.k8s.io/v1beta1
+    VolumeSnapshotContent:
+      - snapshot.storage.k8s.io/v1
+      - snapshot.storage.k8s.io/v1beta1
+    adapter:
+      - config.istio.io/v1alpha2
+    attributemanifest:
+      - config.istio.io/v1alpha2
+    handler:
+      - config.istio.io/v1alpha2
+    instance:
+      - config.istio.io/v1alpha2
+    rule:
+      - config.istio.io/v1alpha2
+    template:
+      - config.istio.io/v1alpha2
