@@ -52,7 +52,7 @@ def getServiceName(filePath):
     data = fs.read(filePath)
     lines = data.splitlines()
     for l in lines:
-        if 'artifactId' in l:
+        if re.search("^[\t]<artifactId", l):
             t = l.split('>')
             t2 = t[1].split('<')
             return t2[0]
