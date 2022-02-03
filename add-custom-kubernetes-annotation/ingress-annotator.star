@@ -27,7 +27,8 @@ def transform(new_artifacts, old_artifacts):
         fileList = fs.readdir(yamlsPath)
         yamlsBasePath = yamlsPath.split("/")[-1]
         # Create a custom path template for the service, whose values gets filled and can be used in other pathmappings
-        pathTemplateName = serviceName.replace("-", "") + yamlsBasePath
+        pathTemplateName = serviceName + yamlsBasePath
+        pathTemplateName = pathTemplateName.replace("-", "")
         tplPathData = {'PathTemplateName': pathTemplateName}
         pathMappings.append({'type': 'PathTemplate', \
                             'sourcePath': "{{ OutputRel \"" + yamlsPath + "\" }}", \
