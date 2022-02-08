@@ -14,26 +14,72 @@
 
 # Performs the detection of m2k_collect folder
 def directory_detect(dir):
-    if 'm2k_collect' in dir:
-        collectDir = dir + "/cf"
-        fileList = fs.readdir(collectDir)
-        fullPaths = []
-        for fileName in fileList:
-            if 'cfapps' in fileName:
-                fullPaths.append(fs.pathjoin(collectDir, fileName))
-        return  {"": [{
-                    "paths": {"CfAppsFilesPaths": fullPaths} }] }
+    kind = "CfApps"
+    fileList = fs.getyamlswithtypemeta(inputpath=dir, kind=kind)
+    return  {"": [{
+                "paths": {"CfAppsFilesPaths": fileList} }] }
 
-# Return csv string formed using the dictionary values
-def get_csv_string(fields, app_dict):
-    csv_string = ""
+# Creates a list of strings having the application details and appends it to the output_strings_lists
+def append_app_details_to_lists(app, applications, output_strings_lists, fields):
+    app["Record Type 1"] = "1"
+    app["Application Name"] = "A:" + applications["application"]["name"]
+    app["Tag Type 1"] = "application"
+    app["Tag 1"] = applications["application"]["spacedata"]["entity"]["orgdata"]["entity"]["name"]
+    app["Tag Type 2"] = "app type"
+    app["Tag 2"] = "app"
+    output_strings_lists = update_output_strings_lists(fields, app, output_strings_lists)
+    return output_strings_lists
+
+# Updates the app_dep dictionary with dependency service details
+def update_app_dependency_dict(app_dep, applications, vcap_serv):
+    app_dep["Record Type 1"] = "2"
+    app_dep["Application Name"] = "A:" + applications["application"]["name"]
+    app_dep["Dependency"] = "S:" + vcap_serv["instance_name"]
+    app_dep["Dependency Direction"] = "northbound"
+    return app_dep
+
+# Creates a dictionary which contains the service's details
+def create_serv_dict(app_dep, applications, vcap_serv):
+    serv = {}
+    serv["Record Type 1"] = "1"
+    serv["Application Name"] = app_dep["Dependency"]
+    serv["Tag Type 1"] = "application"
+    serv["Tag 1"] = applications["application"]["spacedata"]["entity"]["orgdata"]["entity"]["name"]
+    serv["Tag Type 2"] = "app type"
+    serv["Tag 2"] = "service"
+    serv["Tag Type 3"] = "service"
+    serv["Tag 3"] = vcap_serv["label"]
+    return serv
+
+# Creates lists of strings for app dependencies and services and appends them to output_strings_lists
+def append_app_dependencies_services_to_lists(applications, output_strings_lists, fields):
+    vcap_serv_labels = ["postgresql-database", "storagegrid", "user-provided"]
+    for vcap_serv_label in vcap_serv_labels:
+        if vcap_serv_label in applications["environment"]["systemenv"]["VCAP_SERVICES"].keys():
+            app_dep = {}
+            for vcap_serv in applications["environment"]["systemenv"]["VCAP_SERVICES"][vcap_serv_label]:
+                app_dep = update_app_dependency_dict(app_dep, applications, vcap_serv)
+                output_strings_lists = update_output_strings_lists(fields, app_dep, output_strings_lists)
+                serv = create_serv_dict(app_dep, applications, vcap_serv)
+                output_strings_lists = update_output_strings_lists(fields, serv, output_strings_lists)
+    return output_strings_lists
+
+# Returns list of strings formed using the dictionary values
+def get_output_strings_list(fields, app_dict):
+    output_strings_list = []
     for field in fields:
         if field in app_dict.keys():
-            csv_string = csv_string + app_dict[field] + ","
+            output_strings_list.append(app_dict[field])
         else:
-            csv_string = csv_string + ","
-    csv_string = csv_string + "\n"
-    return csv_string
+            output_strings_list.append("")
+    return output_strings_list
+
+# Updates the output_strings_lists by adding the new list of strings if it doesn't exist already
+def update_output_strings_lists(fields, app_dict, output_strings_lists):
+    output_strings_list = get_output_strings_list(fields, app_dict)
+    if output_strings_list not in output_strings_lists:
+        output_strings_lists.append(output_strings_list)
+    return output_strings_lists
 
 # Creates a csv file, in the format consumable by Tackle, using m2k_collect output
 def transform(new_artifacts, old_artifacts):
@@ -41,62 +87,20 @@ def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
     fields = ["Record Type 1", "Application Name", "Description", "Comments", "Business Service", "Dependency", "Dependency Direction", "Tag Type 1", "Tag 1", "Tag Type 2", "Tag 2", "Tag Type 3", "Tag 3", "Tag Type 4", "Tag 4", "Tag Type 5", "Tag 5", "Tag Type 6", "Tag 6", "Tag Type 7", "Tag 7", "Tag Type 8", "Tag 8", "Tag Type 9", "Tag 9", "Tag Type 10", "Tag 10", "Tag Type 11", "Tag 11", "Tag Type 12", "Tag 12", "Tag Type 13", "Tag 13", "Tag Type 14", "Tag 14", "Tag Type 15", "Tag 15", "Tag Type 16", "Tag 16", "Tag Type 17", "Tag 17", "Tag Type 18", "Tag 18", "Tag Type 19", "Tag 19", "Tag Type 20", "Tag 20"]
-    apps = {}
+    output_strings_lists = [fields]
     for v in new_artifacts:
         cfAppsFilesPaths = v["paths"]["CfAppsFilesPaths"]
         for cfAppsFilePath in cfAppsFilesPaths:
             s = fs.read(cfAppsFilePath)
             yamlData = yaml.loads(s)
-            csv_string = "Record Type 1,Application Name,Description,Comments,Business Service,Dependency,Dependency Direction,Tag Type 1,Tag 1,Tag Type 2,Tag 2,Tag Type 3,Tag 3,Tag Type 4,Tag 4,Tag Type 5,Tag 5,Tag Type 6,Tag 6,Tag Type 7,Tag 7,Tag Type 8,Tag 8,Tag Type 9,Tag 9,Tag Type 10,Tag 10,Tag Type 11,Tag 11,Tag Type 12,Tag 12,Tag Type 13,Tag 13,Tag Type 14,Tag 14,Tag Type 15,Tag 15,Tag Type 16,Tag 16,Tag Type 17,Tag 17,Tag Type 18,Tag 18,Tag Type 19,Tag 19,Tag Type 20,Tag 20\n"
-            csv_strings = [csv_string]
             app = {}
             for applications in yamlData["spec"]["applications"]:
-                app["Record Type 1"] = "1"
-                app["Application Name"] = "A:" + applications["application"]["name"]
-                app["Tag Type 1"] = "application"
-                app["Tag 1"] = applications["application"]["spacedata"]["entity"]["orgdata"]["entity"]["name"]
-                app["Tag Type 2"] = "app type"
-                app["Tag 2"] = "app"
-
-                csv_string = get_csv_string(fields, app)
-                if csv_string not in csv_strings:
-                    csv_strings.append(csv_string)
-
-                vcap_serv_labels = ["postgresql-database", "storagegrid", "user-provided"]
-                for vcap_serv_label in vcap_serv_labels:
-                    if vcap_serv_label in applications["environment"]["systemenv"]["VCAP_SERVICES"].keys():
-                        app1 = {}
-                        for vcap_serv in applications["environment"]["systemenv"]["VCAP_SERVICES"][vcap_serv_label]:
-                            app1["Record Type 1"] = "2"
-                            app1["Application Name"] = "A:" + applications["application"]["name"]
-                            app1["Dependency"] = "S:" + vcap_serv["instance_name"]
-                            app1["Dependency Direction"] = "northbound"
-
-                            csv_string = get_csv_string(fields, app1)
-                            if csv_string not in csv_strings:
-                                csv_strings.append(csv_string)
-
-                            serv = {}
-                            serv["Record Type 1"] = "1"
-                            serv["Application Name"] = app1["Dependency"]
-                            serv["Tag Type 1"] = "application"
-                            serv["Tag 1"] = applications["application"]["spacedata"]["entity"]["orgdata"]["entity"]["name"]
-                            serv["Tag Type 2"] = "app type"
-                            serv["Tag 2"] = "service"
-                            serv["Tag Type 3"] = "service"
-                            serv["Tag 3"] = vcap_serv["label"]
-
-                            csv_string = get_csv_string(fields, serv)
-                            if csv_string not in csv_strings:
-                                csv_strings.append(csv_string)
-                outputFileName = cfAppsFilePath.split("/")[-1].split(".")[0]+ ".csv"
-                tmpFilePath = temp_dir + outputFileName
-                string = ""
-                for csv_string in csv_strings:
-                    string  = string + csv_string
-                fs.write(tmpFilePath, string)
-                pathMappings.append({'type': 'Default', \
-                    'sourcePath': tmpFilePath, \
-                    'destinationPath': "m2k_collect/" + outputFileName})
-
+                output_strings_lists = append_app_details_to_lists(app, applications, output_strings_lists, fields)
+                output_strings_lists = append_app_dependencies_services_to_lists(applications, output_strings_lists, fields)
+            outputFileName = cfAppsFilePath.split("/")[-1].split(".")[0]+ ".csv"
+            tmpFilePath = temp_dir + outputFileName
+            fs.write(tmpFilePath, csv.write_all(output_strings_lists))
+            pathMappings.append({'type': 'Default', \
+                'sourcePath': tmpFilePath, \
+                'destinationPath': outputFileName})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
