@@ -53,8 +53,10 @@ def create_serv_dict(app_dep, applications, vcap_serv):
 
 # Creates lists of strings for app dependencies and services and appends them to output_strings_lists
 def append_app_dependencies_services_to_lists(applications, output_strings_lists, fields):
-    vcap_serv_labels = ["postgresql-database", "storagegrid", "user-provided"]
+    vcap_serv_labels = ["postgresql-database", "storagegrid", "user-provided", "cloud-object-storage"]
     for vcap_serv_label in vcap_serv_labels:
+        if type(applications["environment"]["systemenv"]["VCAP_SERVICES"]) == "string":
+            applications["environment"]["systemenv"]["VCAP_SERVICES"] = json.decode(applications["environment"]["systemenv"]["VCAP_SERVICES"])
         if vcap_serv_label in applications["environment"]["systemenv"]["VCAP_SERVICES"].keys():
             app_dep = {}
             for vcap_serv in applications["environment"]["systemenv"]["VCAP_SERVICES"][vcap_serv_label]:
