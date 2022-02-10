@@ -17,11 +17,7 @@ Steps 1 - 4 can be skipped if you just want to try out this transformer without 
 2. Install the latest version of Move2Kube.
 
    ```console
-   $ git clone https://github.com/konveyor/move2kube/
-   
-   $ cd move2kube
-   
-   $ make build
+   $ BLEEDING_EDGE='true' bash <(curl https://raw.githubusercontent.com/konveyor/move2kube/main/scripts/install.sh)
    ```
 
    To verify that Mov2Kube was correctly installed you can run `move2kube version -l`.
