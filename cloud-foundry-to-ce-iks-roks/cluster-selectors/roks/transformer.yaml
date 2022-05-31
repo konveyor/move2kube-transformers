@@ -1,0 +1,28 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: ROKSClusterSelector
+  labels:
+    move2kube.konveyor.io/built-in: false
+    move2kube.konveyor.io/kubernetesclusterselector: true
+spec:
+  class: "ClusterSelectorTransformer"
+  directoryDetect:
+    levels: 0
+  consumes:
+    IR:
+      merge: true
+      mode: OnDemandPassThrough
+    KubernetesOrgYamlsInSource:
+      merge: false
+      mode: OnDemandPassThrough
+  produces:
+    IR:
+      disabled: false
+    KubernetesOrgYamlsInSource:
+      disabled: false
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/name: ClusterSelector
+  config:
+    qasuffix: "roks"
