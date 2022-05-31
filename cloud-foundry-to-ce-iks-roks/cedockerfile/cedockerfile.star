@@ -43,7 +43,6 @@ def convertMemToCeFormat(mem):
     return mem
 
 def transform(new_artifacts, old_artifacts):
-    print("CEDOCKER~!!")
     pathMappings = []
     artifacts = []
     regUrl = m2k.query({"id": "move2kube.target.imageregistry.url",
