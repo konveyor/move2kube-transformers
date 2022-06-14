@@ -51,7 +51,7 @@ def transform(new_artifacts, old_artifacts):
     namespace = m2k.query({"id": "move2kube.target.imageregistry.namespace",
             "type": "Input",
             "description": "Enter the namespace where the new images should be pushed : "})
-    regSecret = m2k.query({"id": "move2kube.target.imageregistry.pullsecret",
+    regSecret = m2k.query({"id": "move2kube.target.imageregistry.registrysecret",
             "type": "Input",
             "description": "Enter the name of the registry secret : "})
     pathTemplate = "{{ SourceRel .ServiceFsPath }}"
