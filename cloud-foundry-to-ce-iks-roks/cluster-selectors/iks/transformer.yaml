@@ -25,4 +25,4 @@ spec:
     matchLabels: 
       move2kube.konveyor.io/name: ClusterSelector
   config:
-    qalabel: "iks"
+    clusterqalabel: "iks"

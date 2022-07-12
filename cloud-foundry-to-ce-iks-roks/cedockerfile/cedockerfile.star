@@ -13,6 +13,9 @@
 #   limitations under the License.
 def envListAsStr(envMapJson):
     envStr = ""
+    if envMapJson == None:
+        print("CEDocker: The environment map is None!!!")
+        return envStr
     for env in envMapJson:
         if len(env["Value"]) > 0:
             envStr = envStr + "--env " + env["Name"] + "=\"" + env["Value"] + "\" "
@@ -43,6 +46,7 @@ def convertMemToCeFormat(mem):
     return mem
 
 def transform(new_artifacts, old_artifacts):
+    print('CEDockerfile Transformer invokation!!!')
     pathMappings = []
     artifacts = []
     regUrl = m2k.query({"id": "move2kube.target.imageregistry.url",
@@ -55,6 +59,9 @@ def transform(new_artifacts, old_artifacts):
             "type": "Input",
             "description": "Enter the name of the registry secret : "})
     pathTemplate = "{{ SourceRel .ServiceFsPath }}"
+    if new_artifacts == None:
+        print('CEDocker Error: Artifact list is empty!!!')
+        return {'pathMappings': pathMappings, 'artifacts': artifacts}
     for new_artifact in new_artifacts:
         d = {}
         vcapAsEnvSecretName = ""
@@ -78,11 +85,15 @@ def transform(new_artifacts, old_artifacts):
                 serviceName in new_artifact["configs"]["IR"]["services"].keys():
                 if "storages" in new_artifact["configs"]["IR"]:
                     storages = new_artifact["configs"]["IR"]["storages"]
+                    print('CEDocker: Number of storages --> ' + str(len(storages)))
                     for s in storages:
                         if s["storagetype"] == "Secret" and serviceName + "-vcapasenv" == s["name"]:
                             vcapAsEnvSecretName = s["name"]
-                            for key, val in s["content"].items():
-                                vcapAsEnvData.append({"name": key, "value": byteArrayToString(val)})
+                            if "content" in s: 
+                                for key, val in s["content"].items():
+                                    vcapAsEnvData.append({"name": key, "value": byteArrayToString(val)})
+                            else:
+                                print('CEDocker: VCAP Content is empty!!')
                 es = \
                     new_artifact["configs"]["IR"]["services"][serviceName]["Containers"][0]["Resources"]["Requests"]["ephemeral-storage"]
                 if es != "0":
