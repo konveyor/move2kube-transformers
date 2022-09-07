@@ -100,5 +100,5 @@ def transform(new_artifacts, old_artifacts):
             data["Images"] = images
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
-    pathMappings.append({'type': 'Template', 'sourcePath': 'customizations/custom-vpc-contract-generator/templates/', 'templateConfig': data})
+    pathMappings.append({'type': 'Template', 'templateConfig': data})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
