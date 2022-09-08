@@ -59,10 +59,10 @@ def transform(new_artifacts, old_artifacts):
                 servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service[%d].pass" % (i), "type": "Input", "description": "Enter the password : ", "default": ""})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
-                composeArchive = m2k.query({"id": "move2kube.ibmvpc.workload.compose.archive", "type": "Input", "description": "Enter the compose archive : ", "default": ""})
-                imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
-                imagesCount = int(imagesCountStr)
-                images = {}
+            composeArchive = m2k.query({"id": "move2kube.ibmvpc.workload.compose.archive", "type": "Input", "description": "Enter the compose archive : ", "default": ""})
+            imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
+            imagesCount = int(imagesCountStr)
+            images = {}
 
             for i in range(imagesCount):
                 registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.registry[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
