@@ -100,5 +100,5 @@ def transform(new_artifacts, old_artifacts):
             data["Images"] = images
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
-    pathMappings.append({'type': 'Template', 'templateConfig': data})
+    pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}

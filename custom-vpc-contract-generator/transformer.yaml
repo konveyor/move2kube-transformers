@@ -10,5 +10,5 @@ spec:
     levels: 0
   config:
     starFile: "vpccontractgenerator.star"
-  invokesByDefault:
+  invokedByDefault:
     enabled: true
