@@ -42,12 +42,12 @@ env:
   {{- range $vk, $vv := .WorkloadEnvs}}
   {{$vk}}: {{$vv}}
   {{- end}}
-{{- end}}{{- if .EnvPass}}env: "hyper-protect-basic.{{rsaCertEnc "" .EnvPass | b64enc}}.
-  {{- $envData := execTpl "envTemplate" .}}
-  {{- aesCbcPbkdfEnc .EnvPass $envData | b64enc}}"
+{{- end}}{{- if .EnvPass}}env: "hyper-protect-basic.{{encRsaCert .IbmHyperProtectCert .EnvPass | b64enc}}.
+  {{- $envData := execTemplate "envTemplate" .}}
+  {{- encAesCbcPbkdf .EnvPass $envData | b64enc}}"
 {{- end}}
 {{- if .WorkloadPass}}
-workload: "hyper-protect-basic.{{rsaCertEnc "" .WorkloadPass | b64enc}}.
-  {{- $workloadData := execTpl "workloadTemplate" .}}
-  {{- aesCbcPbkdfEnc .WorkloadPass $workloadData | b64enc}}"
+workload: "hyper-protect-basic.{{encRsaCert .IbmHyperProtectCert .WorkloadPass | b64enc}}.
+  {{- $workloadData := execTemplate "workloadTemplate" .}}
+  {{- encAesCbcPbkdf .WorkloadPass $workloadData | b64enc}}"
 {{- end}}
