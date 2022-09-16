@@ -1,4 +1,4 @@
-env: |
+{{- if .EnvType}}env: |
   type: env
   logging:
     logDNA:
@@ -12,6 +12,8 @@ env: |
       {{$vk}}: {{$vv}}
       {{- end}}
     {{- end}}
+{{- end}}
+{{- if .WorkloadType}}
 workload: |
   type: workload
   auths:
@@ -42,3 +44,4 @@ workload: |
     {{- range $vk, $vv := .WorkloadEnvs}}
     {{$vk}}: {{$vv}}
     {{- end}}
+{{- end}}
