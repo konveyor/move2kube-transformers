@@ -17,10 +17,6 @@ def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
 
-    # get certificate from assets folder
-    ibmHyperProtectCert = fs.read(fs.pathjoin(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
-    print(fs.pathjoin(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
-
     ## Q&A to fill the contract file
     usesVPC = m2k.query({"id": "move2kube.ibmvpc", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
     if usesVPC == "No":
@@ -32,6 +28,12 @@ def transform(new_artifacts, old_artifacts):
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
 
     data = {}
+
+    configs = {}
+
+    configs['VpcContractSec'] = {}
+
+    print(output_dir)
 
     for confType in confTypes:
         if confType == "env":
@@ -50,15 +52,13 @@ def transform(new_artifacts, old_artifacts):
                 volume = {"mount": volumeMount, "seed": volumeSeed, "filesystem": volumeFS}
                 volumes[volumeName] = volume
 
-            envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Input", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
-
             data["EnvType"] = confType
             data["LogHostName"] = logHostName
             data["IngestionKey"] = ingestionKey
             data["LogPort"] = logPortStr
             data["EnvVolumes"] = volumes
-            if envPass != "":
-                data["EnvPass"] = envPass
+
+            configs["VpcContractSec"]["envType"] = confType
 
         elif confType == "workload":
             authsCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.authscount", "type": "Input", "description": "Enter the number of workloads : ", "default": "0"})
@@ -104,8 +104,6 @@ def transform(new_artifacts, old_artifacts):
                 envKey = m2k.query({"id": "move2kube.ibmvpc.workload.envs[%d].key" % (i), "type": "Input", "description": "Enter the environment variable %d key : " % (i+1), "default": ""})
                 envValue = m2k.query({"id": "move2kube.ibmvpc.workload.envs[%d].value" % (i), "type": "Input", "description": "Enter the environment variable %d value : " % (i+1), "default": ""})
                 workloadEnvs[envKey] = envValue
-            
-            workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Input", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
 
             data["WorkloadType"] = confType
             data["Auths"] = auths
@@ -113,8 +111,10 @@ def transform(new_artifacts, old_artifacts):
             data["Images"] = images
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
-            if workloadPass != "":
-                data["WorkloadPass"] = workloadPass
-    data["IbmHyperProtectCert"] = ibmHyperProtectCert
+
+            configs["VpcContractSec"]["workloadType"] = confType
+
+    artifact = {'name': 'VpcContract', 'type': 'VpcContract', 'paths': {'VpcContract': [fs.pathjoin(output_dir, 'ibm_vpc_artifacts')]}, 'configs': configs}
+    artifacts.append(artifact)
     pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}

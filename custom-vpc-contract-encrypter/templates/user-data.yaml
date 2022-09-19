@@ -1,0 +1,7 @@
+{{- if .EnvData}}env: |
+{{ .EnvData | indent 2}}
+{{- end}}
+{{- if .WorkloadData}}
+workload: |
+{{ .WorkloadData | indent 2}}
+{{- end}}
