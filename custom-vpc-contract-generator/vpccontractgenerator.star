@@ -18,7 +18,8 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
 
     # get certificate from assets folder
-    ibmHyperProtectCert = fs.read(fs.pathjoin(assets_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
+    ibmHyperProtectCert = fs.read(fs.pathjoin(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
+    print(fs.pathjoin(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
 
     ## Q&A to fill the contract file
     usesVPC = m2k.query({"id": "move2kube.ibmvpc", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
