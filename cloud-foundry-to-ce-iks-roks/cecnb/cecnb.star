@@ -14,7 +14,7 @@
 def envListAsStr(envMapJson):
     envStr = ""
     if envMapJson == None:
-        print("CECNB Error: The environment map is None!!!")
+        print("CECNB: The environment map is None!")
         return envStr
     for env in envMapJson:
         if len(env["Value"]) > 0:
@@ -51,7 +51,7 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
     pathTemplate = "{{ SourceRel .ServiceFsPath }}"
     if new_artifacts == None:
-        print('CECNB Error: Artifact list is empty!!!')
+        print('CECNB: Artifact list is empty!')
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
     for new_artifact in new_artifacts:
         d = {}
@@ -72,7 +72,7 @@ def transform(new_artifacts, old_artifacts):
                             for key, val in s["content"].items():
                                 vcapAsEnvData.append({"name": key, "value": byteArrayToString(val)})
                         else:
-                            print('CECNB: VCAP Content is empty!!')
+                            print('CECNB: VCAP Content is empty!')
             d["ServiceName"] = serviceName
             d["ServiceFsPath"] = servicePath
             pathTemplateName = serviceName.replace("-", "") + 'cecnbpath'

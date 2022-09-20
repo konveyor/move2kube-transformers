@@ -14,7 +14,7 @@
 def envListAsStr(envMapJson):
     envStr = ""
     if envMapJson == None:
-        print("CEDocker: The environment map is None!!!")
+        print("CEDocker: The environment map is None!")
         return envStr
     for env in envMapJson:
         if len(env["Value"]) > 0:
@@ -46,21 +46,24 @@ def convertMemToCeFormat(mem):
     return mem
 
 def transform(new_artifacts, old_artifacts):
-    print('CEDockerfile Transformer invokation!!!')
+    print('CEDockerfile Transformer invokation!')
     pathMappings = []
     artifacts = []
     regUrl = m2k.query({"id": "move2kube.target.imageregistry.url",
             "type": "Input",
-            "description": "Enter the URL of the image registry : "})
+            "description": "Enter the URL of the image registry where the new images should be pushed : "})
     namespace = m2k.query({"id": "move2kube.target.imageregistry.namespace",
             "type": "Input",
             "description": "Enter the namespace where the new images should be pushed : "})
     regSecret = m2k.query({"id": "move2kube.target.imageregistry.registrysecret",
             "type": "Input",
             "description": "Enter the name of the registry secret : "})
+    minReplicas = m2k.query({"id": "move2kube.minreplicas",
+                "type": "Input",
+                "description": "Provide the minimum number of replicas each service should have : "})
     pathTemplate = "{{ SourceRel .ServiceFsPath }}"
     if new_artifacts == None:
-        print('CEDocker Error: Artifact list is empty!!!')
+        print('CEDocker Error: Artifact list is empty!')
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
     for new_artifact in new_artifacts:
         d = {}
@@ -69,6 +72,7 @@ def transform(new_artifacts, old_artifacts):
         d["RegistryURL"] = regUrl
         d["Namespace"] = namespace
         d["RegistrySecret"] = regSecret
+        d["NumInstances"] = minReplicas
         serviceName = new_artifact["name"]
         servicePath = new_artifact['paths']['ServiceDirectories'][0]
         d["ServiceFsPath"] = servicePath
@@ -93,7 +97,7 @@ def transform(new_artifacts, old_artifacts):
                                 for key, val in s["content"].items():
                                     vcapAsEnvData.append({"name": key, "value": byteArrayToString(val)})
                             else:
-                                print('CEDocker: VCAP Content is empty!!')
+                                print('CEDocker: VCAP Content is empty!')
                 es = \
                     new_artifact["configs"]["IR"]["services"][serviceName]["Containers"][0]["Resources"]["Requests"]["ephemeral-storage"]
                 if es != "0":
@@ -104,7 +108,6 @@ def transform(new_artifacts, old_artifacts):
                     d["Memory"] = " --memory \"" + convertMemToCeFormat(mem) + "\""
                 d["EnvList"] = \
                 envListAsStr(new_artifact["configs"]["IR"]["services"][serviceName]["Containers"][0]["Env"])
-                d["NumInstances"] = new_artifact["configs"]["IR"]["services"][serviceName]["Replicas"]
                 if len(vcapAsEnvData) > 0:
                     d["VcapAsEnvData"] = vcapAsEnvData
                     d["VcapAsEnvSecretName"] = vcapAsEnvSecretName       
