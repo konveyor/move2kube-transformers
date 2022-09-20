@@ -15,3 +15,6 @@ spec:
   produces:
     VpcContract:
       disabled: false
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"

@@ -13,3 +13,6 @@ spec:
   consumes:
     VpcContract:
       merge: false
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"

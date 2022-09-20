@@ -33,7 +33,6 @@ def transform(new_artifacts, old_artifacts):
 
     configs['VpcContractSec'] = {}
 
-    print(output_dir)
 
     for confType in confTypes:
         if confType == "env":
@@ -70,7 +69,14 @@ def transform(new_artifacts, old_artifacts):
                 servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service[%d].pass" % (i), "type": "Input", "description": "Enter the password : ", "default": ""})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
-            composeArchive = m2k.query({"id": "move2kube.ibmvpc.workload.compose.archive", "type": "Input", "description": "Enter the compose archive : ", "default": ""})
+            composeFilePaths = ""
+            composeCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.compose.count", "type": "Input", "description": "Enter the number of docker compose files : ", "default": "0"})
+            composeCount = int(composeCountStr)
+            for i in range(composeCount):
+                if composeFilePaths == "":
+                    composeFilePaths = m2k.query({"id": "move2kube.ibmvpc.workload.compose.filepaths", "type": "Input", "description": "Enter the compose %d file path: " % (i+1), "default": ""})
+                else:
+                    composeFilePaths = composeFilePaths + "," + m2k.query({"id": "move2kube.ibmvpc.workload.compose.filepaths", "type": "Input", "description": "Enter the compose %d file path: " % (i+1), "default": ""})
             imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
             imagesCount = int(imagesCountStr)
             images = {}
@@ -107,7 +113,7 @@ def transform(new_artifacts, old_artifacts):
 
             data["WorkloadType"] = confType
             data["Auths"] = auths
-            data["ComposeArchive"] = composeArchive
+            data["ComposeFilePaths"] = composeFilePaths
             data["Images"] = images
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
