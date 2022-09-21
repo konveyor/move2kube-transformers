@@ -15,7 +15,7 @@
 # Performs the detection of m2k_collect folder
 def directory_detect(dir):
     kind = "CfApps"
-    fileList = fs.getyamlswithtypemeta(inputpath=dir, kind=kind)
+    fileList = fs.get_yamls_with_type_meta(inputpath=dir, kind=kind)
     return  {"": [{
                 "paths": {"CfAppsFilesPaths": fileList} }] }
 

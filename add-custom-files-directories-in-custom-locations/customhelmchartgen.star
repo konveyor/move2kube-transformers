@@ -15,7 +15,7 @@ PomFile = "pom.xml"
 
 # Performs the detection of pom file and extracts service name
 def directory_detect(dir):
-    dataFilePath = fs.pathjoin(dir, PomFile)
+    dataFilePath = fs.path_join(dir, PomFile)
     if fs.exists(dataFilePath):
         serviceName = getServiceName(dataFilePath)
         return  {serviceName: [{
