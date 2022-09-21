@@ -7,7 +7,7 @@ auths:
     {{- end}}
   {{- end}}
 compose:
-  archive: "{{ archTarStr .ComposeFilePaths | b64enc }}"
+  archive: "{{ archTarGZipStr .ComposeFilesDir | b64enc }}"
 images:
   dct:
     {{- range $k, $v := .Images}}
