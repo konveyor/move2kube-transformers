@@ -24,7 +24,7 @@ def transform(new_artifacts, old_artifacts):
         serviceName = a["name"]
         artifacts.append(a)
 
-        fileList = fs.readdir(yamlsPath)
+        fileList = fs.read_dir(yamlsPath)
         yamlsBasePath = yamlsPath.split("/")[-1]
         # Create a custom path template for the service, whose values gets filled and can be used in other pathmappings
         pathTemplateName = serviceName + yamlsBasePath
@@ -34,7 +34,7 @@ def transform(new_artifacts, old_artifacts):
                             'sourcePath': "{{ OutputRel \"" + yamlsPath + "\" }}", \
                             'templateConfig': tplPathData})
         for f in fileList:
-            filePath = fs.pathjoin(yamlsPath, f)
+            filePath = fs.path_join(yamlsPath, f)
             s = fs.read(filePath)
             yamlData = yaml.loads(s)
             if yamlData['kind'] != 'Ingress':
