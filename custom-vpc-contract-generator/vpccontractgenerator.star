@@ -18,7 +18,7 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
 
     ## Q&A to fill the contract file
-    usesVPC = m2k.query({"id": "move2kube.ibmvpc.choice", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
+    usesVPC = m2k.query({"id": "move2kube.ibmvpc.enabled", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
     if usesVPC == "No":
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
 

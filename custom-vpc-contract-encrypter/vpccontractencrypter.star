@@ -23,12 +23,12 @@ def transform(new_artifacts, old_artifacts):
     for new_artifact in new_artifacts:
         data = {}
         if "envType" in new_artifact["configs"]["VpcContractSec"].keys():
-            envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Input", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
+            envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Password", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
             envData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'env.yaml'))
             data["EnvData"] = envData
             data["EnvPass"] = envPass
         if "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
-            workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Input", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
+            workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Password", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
             workloadData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'))
             data["WorkloadData"] = workloadData
             data["WorkloadPass"] = workloadPass
