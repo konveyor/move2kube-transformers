@@ -69,7 +69,9 @@ def transform(new_artifacts, old_artifacts):
                 servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service[%d].pass" % (i), "type": "Input", "description": "Enter the password : ", "default": ""})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
-            composeFilesDir = m2k.query({"id": "move2kube.ibmvpc.workload.compose.dir", "type": "Input", "description": "Enter the folder path containing docker compose file: ", "default": ""})
+            composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": ""})
+            fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
+            composeDigest = archive.arch_tar_gzip_str(temp_dir)
             imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
             imagesCount = int(imagesCountStr)
             images = {}
@@ -106,7 +108,7 @@ def transform(new_artifacts, old_artifacts):
 
             data["WorkloadType"] = confType
             data["Auths"] = auths
-            data["ComposeFilesDir"] = composeFilesDir
+            data["composeDigest"] = composeDigest
             data["Images"] = images
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
