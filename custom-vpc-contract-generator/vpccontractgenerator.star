@@ -18,7 +18,7 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
 
     ## Q&A to fill the contract file
-    usesVPC = m2k.query({"id": "move2kube.ibmvpc", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
+    usesVPC = m2k.query({"id": "move2kube.ibmvpc.choice", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
     if usesVPC == "No":
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
 
@@ -44,10 +44,10 @@ def transform(new_artifacts, old_artifacts):
             volumes = {}
 
             for i in range(volumeCount):
-                volumeName = m2k.query({"id": "move2kube.ibmvpc.env.volumes[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : " % (i+1), "default": ""})
-                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.env.volumes[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
-                volumeMount = m2k.query({"id": "move2kube.ibmvpc.env.volumes[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
-                volumeFS = m2k.query({"id": "move2kube.ibmvpc.env.volumes[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
+                volumeName = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : " % (i+1), "default": ""})
+                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
+                volumeMount = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
+                volumeFS = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
                 volume = {"mount": volumeMount, "seed": volumeSeed, "filesystem": volumeFS}
                 volumes[volumeName] = volume
 
@@ -64,9 +64,9 @@ def transform(new_artifacts, old_artifacts):
             authsCount = int(authsCountStr)
             auths = {}
             for i in range(authsCount):
-                serviceAdress = m2k.query({"id": "move2kube.ibmvpc.workload.service[%d].address" % (i), "type": "Input", "description": "Enter the service %d address : " % (i+1), "default": ""})
-                serviceUserName = m2k.query({"id": "move2kube.ibmvpc.env.service[%d].username" % (i), "type": "Input", "description": "Enter the username : ", "default": ""})
-                servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service[%d].pass" % (i), "type": "Input", "description": "Enter the password : ", "default": ""})
+                serviceAdress = m2k.query({"id": "move2kube.ibmvpc.workload.service.[%d].address" % (i), "type": "Input", "description": "Enter the service %d address : " % (i+1), "default": ""})
+                serviceUserName = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].username" % (i), "type": "Input", "description": "Enter the username : ", "default": ""})
+                servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].pass" % (i), "type": "Password", "description": "Enter the password : ", "default": ""})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
             composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": ""})
@@ -77,9 +77,9 @@ def transform(new_artifacts, old_artifacts):
             images = {}
 
             for i in range(imagesCount):
-                registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.registry[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
-                registryNotary = m2k.query({"id": "move2kube.ibmvpc.env.registry[%d].notary" % (i), "type": "Input", "description": "Enter the image %d notary : " % (i+1), "default": ""})
-                registryPublicKey = m2k.query({"id": "move2kube.ibmvpc.env.registry[%d].publickey" % (i), "type": "Input", "description": "Enter the image %d public key : " % (i+1), "default": ""})
+                registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.registry.[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
+                registryNotary = m2k.query({"id": "move2kube.ibmvpc.env.registry.[%d].notary" % (i), "type": "Input", "description": "Enter the image %d notary : " % (i+1), "default": ""})
+                registryPublicKey = m2k.query({"id": "move2kube.ibmvpc.env.registry.[%d].publickey" % (i), "type": "Input", "description": "Enter the image %d public key : " % (i+1), "default": ""})
                 image = {"notary": registryNotary, "publicKey": registryPublicKey}
                 images[registryAdress] = image
 
@@ -89,10 +89,10 @@ def transform(new_artifacts, old_artifacts):
             workloadVolumes = {}
 
             for i in range(workloadVolumeCount):
-                volumeName = m2k.query({"id": "move2kube.ibmvpc.workload.volumes[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : "% (i+1), "default": ""})
-                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.workload.volumes[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
-                volumeMount = m2k.query({"id": "move2kube.ibmvpc.workload.volumes[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
-                volumeFS = m2k.query({"id": "move2kube.ibmvpc.workload.volumes[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
+                volumeName = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : "% (i+1), "default": ""})
+                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
+                volumeMount = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
+                volumeFS = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
                 volume = {"mount": volumeMount, "seed": volumeSeed, "filesystem": volumeFS}
                 workloadVolumes[volumeName] = volume
 
@@ -102,8 +102,8 @@ def transform(new_artifacts, old_artifacts):
             workloadEnvs = {}
 
             for i in range(workloadEnvsCount):
-                envKey = m2k.query({"id": "move2kube.ibmvpc.workload.envs[%d].key" % (i), "type": "Input", "description": "Enter the environment variable %d key : " % (i+1), "default": ""})
-                envValue = m2k.query({"id": "move2kube.ibmvpc.workload.envs[%d].value" % (i), "type": "Input", "description": "Enter the environment variable %d value : " % (i+1), "default": ""})
+                envKey = m2k.query({"id": "move2kube.ibmvpc.workload.envs.[%d].key" % (i), "type": "Input", "description": "Enter the environment variable %d key : " % (i+1), "default": ""})
+                envValue = m2k.query({"id": "move2kube.ibmvpc.workload.envs.[%d].value" % (i), "type": "Input", "description": "Enter the environment variable %d value : " % (i+1), "default": ""})
                 workloadEnvs[envKey] = envValue
 
             data["WorkloadType"] = confType
