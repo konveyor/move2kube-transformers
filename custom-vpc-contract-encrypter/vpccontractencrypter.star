@@ -18,18 +18,18 @@ def transform(new_artifacts, old_artifacts):
     artifacts = []
 
     # get certificate from assets folder
-    ibmHyperProtectCert = fs.read(fs.pathjoin(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
+    ibmHyperProtectCert = fs.read(fs.path_join(resources_dir, "ibm-hyper-protect-container-runtime-1-0-s390x-4-encrypt.cer"))
 
     for new_artifact in new_artifacts:
         data = {}
         if "envType" in new_artifact["configs"]["VpcContractSec"].keys():
             envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Input", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
-            envData = fs.read(fs.pathjoin(new_artifact["paths"]["VpcContract"][0], 'env.yaml'))
+            envData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'env.yaml'))
             data["EnvData"] = envData
             data["EnvPass"] = envPass
         if "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
             workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Input", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
-            workloadData = fs.read(fs.pathjoin(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'))
+            workloadData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'))
             data["WorkloadData"] = workloadData
             data["WorkloadPass"] = workloadPass
         data["IbmHyperProtectCert"] = ibmHyperProtectCert

@@ -113,7 +113,7 @@ def transform(new_artifacts, old_artifacts):
 
             configs["VpcContractSec"]["workloadType"] = confType
 
-    artifact = {'name': 'VpcContract', 'type': 'VpcContract', 'paths': {'VpcContract': [fs.pathjoin(output_dir, 'ibm_vpc_artifacts')]}, 'configs': configs}
+    artifact = {'name': 'VpcContract', 'type': 'VpcContract', 'paths': {'VpcContract': [fs.path_join(output_dir, 'ibm_vpc_artifacts')]}, 'configs': configs}
     artifacts.append(artifact)
     pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
