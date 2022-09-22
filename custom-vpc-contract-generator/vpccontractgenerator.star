@@ -71,7 +71,7 @@ def transform(new_artifacts, old_artifacts):
                 auths[serviceAdress] = auth
             composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": ""})
             fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
-            composeDigest = archive.arch_tar_gzip_str(temp_dir)
+            composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
             imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
             imagesCount = int(imagesCountStr)
             images = {}
