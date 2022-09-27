@@ -1,4 +1,4 @@
-type: workload
+{{- if .WorkloadType}}type: workload
 auths:
   {{- range $k, $v := .Auths}}
   {{$k}}:
@@ -27,3 +27,5 @@ env:
   {{- range $vk, $vv := .WorkloadEnvs}}
   {{$vk}}: {{$vv}}
   {{- end}}
+{{- else}} # workload section is not opted for generation
+{{- end}}

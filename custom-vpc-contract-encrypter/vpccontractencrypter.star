@@ -23,15 +23,19 @@ def transform(new_artifacts, old_artifacts):
     for new_artifact in new_artifacts:
         data = {}
         if "envType" in new_artifact["configs"]["VpcContractSec"].keys():
-            envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Password", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
+            envPass = m2k.query({"id": "move2kube.ibmvpc.env.password", "type": "Password", "description": "Enter the password for encryption of env(Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"]})
             envData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'env.yaml'))
             data["EnvData"] = envData
             data["EnvPass"] = envPass
         if "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
-            workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Password", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"], "default": ""})
+            workloadPass = m2k.query({"id": "move2kube.ibmvpc.workload.password", "type": "Password", "description": "Enter the password for encryption of workload (Private Key) : ", "hint": ["If ignored, encrypted contract file would be empty"]})
             workloadData = fs.read(fs.path_join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'))
             data["WorkloadData"] = workloadData
             data["WorkloadPass"] = workloadPass
+        if (("EnvData" in data and data["EnvPass"] == "") or not "EnvData" in data ) and (("WorkloadData" in data and data["WorkloadPass"] == "") or not "WorkloadData" in data):
+            pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/user-data-encrypted.yaml'})
+        if not ("EnvData" in data or "WorkloadData" in data):
+            pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/user-data.yaml'})
         data["IbmHyperProtectCert"] = ibmHyperProtectCert
         pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}

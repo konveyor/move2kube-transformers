@@ -66,10 +66,11 @@ def transform(new_artifacts, old_artifacts):
             for i in range(authsCount):
                 serviceAdress = m2k.query({"id": "move2kube.ibmvpc.workload.service.[%d].address" % (i), "type": "Input", "description": "Enter the service %d address : " % (i+1), "default": ""})
                 serviceUserName = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].username" % (i), "type": "Input", "description": "Enter the username : ", "default": ""})
-                servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].pass" % (i), "type": "Password", "description": "Enter the password : ", "default": ""})
+                servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].pass" % (i), "type": "Password", "description": "Enter the password : "})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
-            composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": ""})
+            composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": "version: \"3.0\"\nservices:\nvolumes:"})
+
             fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
             composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
             imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
@@ -114,6 +115,10 @@ def transform(new_artifacts, old_artifacts):
             data["WorkloadEnvs"] = workloadEnvs
 
             configs["VpcContractSec"]["workloadType"] = confType
+    if not "WorkloadType" in data:
+        pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/workload.yaml'})
+    if not "EnvType" in data:
+        pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/env.yaml'})
 
     artifact = {'name': 'VpcContract', 'type': 'VpcContract', 'paths': {'VpcContract': [fs.path_join(output_dir, 'ibm_vpc_artifacts')]}, 'configs': configs}
     artifacts.append(artifact)
