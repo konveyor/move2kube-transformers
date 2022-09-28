@@ -33,29 +33,40 @@ def transform(new_artifacts, old_artifacts):
 
     configs['VpcContractSec'] = {}
 
+    volumeNames = []
+    if len(confTypes) != 0:
+        volumeCountStr = m2k.query({"id": "move2kube.ibmvpc.volumes.volumecount", "type": "Input", "description": "Enter the number of volumes : ", "default": "0"})
+        volumeCount = int(volumeCountStr)
+        for i in range(volumeCount):
+            volumeName = m2k.query({"id": "move2kube.ibmvpc.volumes.[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : " % (i+1), "default": ""})
+            volumeNames.append(volumeName)
 
     for confType in confTypes:
         if confType == "env":
             logHostName = m2k.query({"id": "move2kube.ibmvpc.env.loghostname", "type": "Input", "description": "Enter the log DNA hostname : ", "default": ""})
             ingestionKey = m2k.query({"id": "move2kube.ibmvpc.env.ingestionkey", "type": "Input", "description": "Enter the ingestion key : ", "default": ""})
-            logPortStr = m2k.query({"id": "move2kube.ibmvpc.env.logport", "type": "Input", "description": "Enter the log port : ", "default": "8080"})
-            volumeCountStr = m2k.query({"id": "move2kube.ibmvpc.env.volumecount", "type": "Input", "description": "Enter the number of volumes : ", "default": "0"})
-            volumeCount = int(volumeCountStr)
+            logPortStr = m2k.query({"id": "move2kube.ibmvpc.env.logport", "type": "Input", "description": "Enter the log port : ", "default": "6514"})
             volumes = {}
-
-            for i in range(volumeCount):
-                volumeName = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : " % (i+1), "default": ""})
-                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
-                volumeMount = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
-                volumeFS = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
-                volume = {"mount": volumeMount, "seed": volumeSeed, "filesystem": volumeFS}
+            for volumneName in volumeNames:
+                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": volumeName})
+                volume = {"seed": volumeSeed}
                 volumes[volumeName] = volume
 
+            envEnvsCountStr = m2k.query({"id": "move2kube.ibmvpc.env.envcount", "type": "Input", "description": "Enter the number of environment variables : ", "default": "0"})
+            envEnvsCount = int(envEnvsCountStr)
+
+            envEnvs = {}
+
+            for i in range(envEnvsCount):
+                envKey = m2k.query({"id": "move2kube.ibmvpc.env.envs.[%d].key" % (i), "type": "Input", "description": "Enter the environment variable %d key : " % (i+1), "default": ""})
+                envValue = m2k.query({"id": "move2kube.ibmvpc.env.envs.[%d].value" % (i), "type": "Input", "description": "Enter the environment variable %d value : " % (i+1), "default": ""})
+                envEnvs[envKey] = envValue
             data["EnvType"] = confType
             data["LogHostName"] = logHostName
             data["IngestionKey"] = ingestionKey
             data["LogPort"] = logPortStr
             data["EnvVolumes"] = volumes
+            data["EnvEnvs"] = envEnvs
 
             configs["VpcContractSec"]["envType"] = confType
 
@@ -73,7 +84,7 @@ def transform(new_artifacts, old_artifacts):
 
             fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
             composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
-            imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images : ", "default": "0"})
+            imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images signed using dct: ", "default": "0"})
             imagesCount = int(imagesCountStr)
             images = {}
 
@@ -84,17 +95,18 @@ def transform(new_artifacts, old_artifacts):
                 image = {"notary": registryNotary, "publicKey": registryPublicKey}
                 images[registryAdress] = image
 
-            workloadVolumeCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.volumecount", "type": "Input", "description": "Enter the number of volumes : ", "default": "0"})
-            workloadVolumeCount = int(workloadVolumeCountStr)
-            
             workloadVolumes = {}
 
-            for i in range(workloadVolumeCount):
-                volumeName = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].name" % (i), "type": "Input", "description": "Enter the volume %d name : "% (i+1), "default": ""})
-                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": ""})
+            for volumeName in volumeNames:
+                volume = {}
+                volumeSeed = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": volumeName})
+                volume["seed"] = volumeSeed
                 volumeMount = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
+                if volumeMount != "":
+                    volume["mount"] = volumeMount
                 volumeFS = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
-                volume = {"mount": volumeMount, "seed": volumeSeed, "filesystem": volumeFS}
+                if volumeFS != "":
+                    volume["filesystem"] = volumeFS
                 workloadVolumes[volumeName] = volume
 
             workloadEnvsCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.envcount", "type": "Input", "description": "Enter the number of environment variables : ", "default": "0"})

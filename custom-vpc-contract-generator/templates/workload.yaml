@@ -8,7 +8,7 @@ auths:
   {{- end}}
 compose:
   archive: "{{ .composeDigest | b64enc }}"
-images:
+{{- if .Images}}images:
   dct:
     {{- range $k, $v := .Images}}
     {{$k}}:
@@ -16,6 +16,8 @@ images:
       {{$vk}}: {{$vv}}
       {{- end}}
     {{- end}}
+{{- end}}
+{{- if .WorkloadVolumes }}
 volumes:
   {{- range $k, $v := .WorkloadVolumes}}
   {{$k}}:
@@ -23,9 +25,11 @@ volumes:
     {{$vk}}: {{$vv}}
     {{- end}}
   {{- end}}
+{{- end}}
+{{- if .WorkloadEnvs}}
 env:
   {{- range $vk, $vv := .WorkloadEnvs}}
   {{$vk}}: {{$vv}}
   {{- end}}
-{{- else}} # workload section is not opted for generation
+{{- end}}
 {{- end}}
