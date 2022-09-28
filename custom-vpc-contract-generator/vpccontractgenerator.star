@@ -84,16 +84,26 @@ def transform(new_artifacts, old_artifacts):
 
             fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
             composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
-            imagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.imagescount", "type": "Input", "description": "Enter the number of images signed using dct: ", "default": "0"})
-            imagesCount = int(imagesCountStr)
-            images = {}
+            dctImagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.dctimagescount", "type": "Input", "description": "Enter the number of images signed using dct: ", "default": "0"})
+            dctImagesCount = int(dctImagesCountStr)
+            dctImages = {}
 
-            for i in range(imagesCount):
-                registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.registry.[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
-                registryNotary = m2k.query({"id": "move2kube.ibmvpc.env.registry.[%d].notary" % (i), "type": "Input", "description": "Enter the image %d notary : " % (i+1), "default": ""})
-                registryPublicKey = m2k.query({"id": "move2kube.ibmvpc.env.registry.[%d].publickey" % (i), "type": "Input", "description": "Enter the image %d public key : " % (i+1), "default": ""})
-                image = {"notary": registryNotary, "publicKey": registryPublicKey}
-                images[registryAdress] = image
+            for i in range(dctImagesCount):
+                registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.dctregistry.[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
+                registryNotary = m2k.query({"id": "move2kube.ibmvpc.env.dctregistry.[%d].notary" % (i), "type": "Input", "description": "Enter the image %d notary : " % (i+1), "default": ""})
+                registryPublicKey = m2k.query({"id": "move2kube.ibmvpc.env.dctregistry.[%d].publickey" % (i), "type": "Input", "description": "Enter the image %d public key : " % (i+1), "default": ""})
+                image = {"notary": '"'+registryNotary+'"', "publicKey": registryPublicKey}
+                dctImages[registryAdress] = image
+
+            rhsImagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.rhsimagescount", "type": "Input", "description": "Enter the number of images signed using rhs: ", "default": "0"})
+            rhsImagesCount = int(rhsImagesCountStr)
+            rhsImages = {}
+
+            for i in range(rhsImagesCount):
+                registryAdress = m2k.query({"id": "move2kube.ibmvpc.workload.rhsregistry.[%d].address" % (i), "type": "Input", "description": "Enter the image %d registry address : " % (i+1), "default": ""})
+                registryPublicKey = m2k.query({"id": "move2kube.ibmvpc.env.rhsregistry.[%d].publickey" % (i), "type": "Input", "description": "Enter the image %d public key : " % (i+1), "default": ""})
+                image = {"publicKey": registryPublicKey}
+                rhsImages[registryAdress] = image
 
             workloadVolumes = {}
 
@@ -122,7 +132,8 @@ def transform(new_artifacts, old_artifacts):
             data["WorkloadType"] = confType
             data["Auths"] = auths
             data["composeDigest"] = composeDigest
-            data["Images"] = images
+            data["dctImages"] = dctImages
+            data["rhsImages"] = rhsImages
             data["WorkloadVolumes"] = workloadVolumes
             data["WorkloadEnvs"] = workloadEnvs
 

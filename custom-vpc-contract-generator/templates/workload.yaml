@@ -8,9 +8,20 @@ auths:
   {{- end}}
 compose:
   archive: "{{ .composeDigest | b64enc }}"
-{{- if .Images}}images:
+{{- if or .dctImages .rhsImages }}
+images: {{- end}}
+{{- if .dctImages}}
   dct:
-    {{- range $k, $v := .Images}}
+    {{- range $k, $v := .dctImages}}
+    {{$k}}:
+      {{- range $vk, $vv := $v}}
+      {{$vk}}: {{$vv}}
+      {{- end}}
+    {{- end}}
+{{- end}}
+{{- if .rhsImages}}
+  rhs:
+    {{- range $k, $v := .rhsImages}}
     {{$k}}:
       {{- range $vk, $vv := $v}}
       {{$vk}}: {{$vv}}
@@ -22,14 +33,14 @@ volumes:
   {{- range $k, $v := .WorkloadVolumes}}
   {{$k}}:
     {{- range $vk, $vv := $v}}
-    {{$vk}}: {{$vv}}
+    {{$vk}}: "{{$vv}}"
     {{- end}}
   {{- end}}
 {{- end}}
 {{- if .WorkloadEnvs}}
 env:
   {{- range $vk, $vv := .WorkloadEnvs}}
-  {{$vk}}: {{$vv}}
+  {{$vk}}: "{{$vv}}"
   {{- end}}
 {{- end}}
 {{- end}}
