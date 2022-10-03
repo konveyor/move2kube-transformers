@@ -30,7 +30,7 @@ def detect(workspaceDir):
                 for a in pomRoot:
                     if 'artifactId' in a.tag:
                         services[a.text] = [{
-                        "paths": {"ServiceDirPath": [rootDir]} }]
+                        "paths": {"ServiceDirectories": [rootDir]} }]
                         break
     return services
 
