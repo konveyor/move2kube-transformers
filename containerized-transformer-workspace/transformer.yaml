@@ -23,6 +23,8 @@ spec:
     transformCMD: ["python", "./transform.py"]
     container: 
       image: containerizedtransformer:latest
+      workingDir: "/m2k/"
+      outputFilePath: "/tmp/output/output.json"
       build:
         dockerfile: "Dockerfile"
         context: "."
