@@ -18,26 +18,32 @@ import xml.etree.ElementTree as ET
 PomFile = "pom.xml"
 
 # Performs the detection of pom file and extracts service name
-def detect(workspaceDir):
-    services = {}
-    for rootDir, _, fileList in os.walk(workspaceDir):
-            for fileName in fileList:
-                if fileName != PomFile:
-                    continue
-                fullFilePath = os.path.join(rootDir, fileName)
-                pomTree = ET.parse(fullFilePath)
-                pomRoot = pomTree.getroot()
-                for a in pomRoot:
-                    if 'artifactId' in a.tag:
-                        services[a.text] = [{
-                        "paths": {"ServiceDirectories": [rootDir]} }]
-                        break
+def detect(inputPath):
+    with open(inputPath) as f:
+        data = f.read()
+        detectInput = json.loads(data)
+        services = {}
+        for rootDir, _, fileList in os.walk(detectInput["InputDirectory"]):
+                for fileName in fileList:
+                    if fileName != PomFile:
+                        continue
+                    fullFilePath = os.path.join(rootDir, fileName)
+                    pomTree = ET.parse(fullFilePath)
+                    pomRoot = pomTree.getroot()
+                    for a in pomRoot:
+                        if 'artifactId' in a.tag:
+                            services[a.text] = [{
+                            "paths": {"ServiceDirectories": [rootDir]} }]
+                            break
     return services
 
 # Entry-point of detect script
 def main():
     services = detect(sys.argv[1])
-    print(json.dumps(services))
+    outDir = "/var/tmp/m2k_detect_output"
+    os.mkdir(outDir)
+    with open(os.path.join(outDir, "m2k_detect_output.json"), "w+") as f:
+        json.dump(services, f)
 
 if __name__ == '__main__':
     main()

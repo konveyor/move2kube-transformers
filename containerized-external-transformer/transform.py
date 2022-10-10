@@ -53,10 +53,9 @@ def transform(artifactsPath):
 # Entry-point of transform script
 def main():
     services = transform(sys.argv[1])
-    # print('Transformer output: ' + str(services))
-    outDir = "/var/tmp/output"
+    outDir = "/var/tmp/m2k_transform_output"
     os.mkdir(outDir)
-    with open(os.path.join(outDir, "output.json"), "w+") as f:
+    with open(os.path.join(outDir, "m2k_transform_output.json"), "w+") as f:
         json.dump(services, f)
 
 if __name__ == '__main__':
