@@ -1,0 +1,29 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: ContainerizedTransformer
+  labels: 
+    move2kube.konveyor.io/inbuilt: false
+spec:
+  mode: "Container"
+  class: "Executable"
+  isolated: true
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"
+  directoryDetect:
+    levels: 1
+  consumes:
+    Service:
+      merge: false
+  config:
+    platforms: 
+      - "darwin"
+    directoryDetectCMD: ["python", "./detect.py"]
+    transformCMD: ["python", "./transform.py"]
+    container: 
+      image: containerizedtransformer:latest
+      workingDir: "/m2k/"
+      build:
+        dockerfile: "Dockerfile"
+        context: "."
