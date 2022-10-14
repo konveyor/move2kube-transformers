@@ -1,0 +1,23 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: NativeTransformer
+  labels: 
+    move2kube.konveyor.io/inbuilt: false
+spec:
+  mode: "Container"
+  class: "Executable"
+  isolated: true
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"
+  directoryDetect:
+    levels: 1
+  consumes:
+    Service:
+      merge: false
+  config:
+    platforms: 
+      - "darwin"
+    directoryDetectCMD: ["/usr/local/bin/python3", "./detect.py"]
+    transformCMD: ["/usr/local/bin/python3", "./transform.py"]
