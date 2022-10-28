@@ -23,7 +23,7 @@ def transform(artifactsPath):
     with open(artifactsPath) as f:
         data = f.read()
         artifactsData = json.loads(data)
-        newArtifacts = artifactsData["NewArtifacts"]
+        newArtifacts = artifactsData["newArtifacts"]
         print('Number of new artifacts: ' + str(len(newArtifacts)))
         for artifact in newArtifacts:
             pathTemplate = "{{ SourceRel .ServiceFsPath }}"
