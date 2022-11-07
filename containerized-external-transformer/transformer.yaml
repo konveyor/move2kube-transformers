@@ -21,6 +21,18 @@ spec:
       - "darwin"
     directoryDetectCMD: ["python", "./detect.py"]
     transformCMD: ["python", "./transform.py"]
+    detectScriptIO:
+      input:
+        mode: env
+        envName: "DETECT_INPUT_PATH"
+      output:
+        mode: arg
+    transformScriptIO:
+      input:
+        mode: arg
+      output:
+        mode: env
+        envName: "TRANSFORM_OUTPUT_PATH"
     container: 
       image: containerizedtransformer:latest
       workingDir: "/m2k/"

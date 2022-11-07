@@ -5,7 +5,6 @@ metadata:
   labels: 
     move2kube.konveyor.io/inbuilt: false
 spec:
-  mode: "Container"
   class: "Executable"
   isolated: true
   override:
@@ -21,3 +20,16 @@ spec:
       - "darwin"
     directoryDetectCMD: ["/usr/local/bin/python3", "./detect.py"]
     transformCMD: ["/usr/local/bin/python3", "./transform.py"]
+    detectScriptIO:
+      input:
+        mode: env
+        envName: "DETECT_INPUT_PATH"
+      output:
+        mode: arg
+    transformScriptIO:
+      input:
+        mode: arg
+      output:
+        mode: env
+        envName: "TRANSFORM_OUTPUT_PATH"
+

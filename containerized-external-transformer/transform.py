@@ -15,6 +15,7 @@ import sys
 import os
 import json
 import yaml
+from parseio import parseIO
 
 # Performs the transformation for the given service
 def transform(artifactsPath):
@@ -52,10 +53,18 @@ def transform(artifactsPath):
 
 # Entry-point of transform script
 def main():
-    services = transform(sys.argv[1])
-    outDir = "/var/tmp/m2k_transform_output"
+    ioEnvNames = ['TRANSFORM_INPUT_PATH', 'TRANSFORM_OUTPUT_PATH']
+    inputPath, outputPath = parseIO(ioEnvNames, "Transform")
+    if len(inputPath) == 0:
+        print('[Transform script] Input path is not specified in script')
+        exit(0)
+    if len(outputPath) == 0:
+        print('[Transform script] Output path is not specified in script')
+        exit(0)
+    services = transform(inputPath)
+    outDir = os.path.dirname(outputPath)
     os.mkdir(outDir)
-    with open(os.path.join(outDir, "m2k_transform_output.json"), "w+") as f:
+    with open(outputPath, "w+") as f:
         json.dump(services, f)
 
 if __name__ == '__main__':

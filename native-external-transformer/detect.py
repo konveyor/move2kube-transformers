@@ -15,13 +15,16 @@ import sys
 import os
 import json
 import xml.etree.ElementTree as ET
+from parseio import parseIO
 PomFile = "pom.xml"
 
 # Performs the detection of pom file and extracts service name
 def detect(inputPath):
+    print('[DETECT] Input file: ' + inputPath)
     with open(inputPath) as f:
         data = f.read()
         detectInput = json.loads(data)
+        print('[DETECT] Input data: ' + str(detectInput))
         services = {}
         for rootDir, _, fileList in os.walk(detectInput["InputDirectory"]):
                 for fileName in fileList:
@@ -39,10 +42,18 @@ def detect(inputPath):
 
 # Entry-point of detect script
 def main():
-    services = detect(sys.argv[1])
-    outDir = "/var/tmp/m2k_detect_output"
+    ioEnvNames = ['DETECT_INPUT_PATH', 'DETECT_OUTPUT_PATH']
+    inputPath, outputPath = parseIO(ioEnvNames, "Detect")
+    if len(inputPath) == 0:
+        print('[Detect script] Input path is not specified in script')
+        exit(0)
+    if len(outputPath) == 0:
+        print('[Detect script] Output path is not specified in script')
+        exit(0)
+    services = detect(inputPath)
+    outDir = os.path.dirname(outputPath)
     os.mkdir(outDir)
-    with open(os.path.join(outDir, "m2k_detect_output.json"), "w+") as f:
+    with open(outputPath, "w+") as f:
         json.dump(services, f)
 
 if __name__ == '__main__':
