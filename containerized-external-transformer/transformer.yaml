@@ -1,10 +1,11 @@
 apiVersion: move2kube.konveyor.io/v1alpha1
 kind: Transformer
 metadata:
-  name: NativeTransformer
+  name: ContainerizedTransformer
   labels: 
     move2kube.konveyor.io/inbuilt: false
 spec:
+  mode: "Container"
   class: "Executable"
   isolated: true
   override:
@@ -18,8 +19,8 @@ spec:
   config:
     platforms: 
       - "darwin"
-    directoryDetectCMD: ["/usr/local/bin/python3", "./detect.py"]
-    transformCMD: ["/usr/local/bin/python3", "./transform.py"]
+    directoryDetectCMD: ["python", "./detect.py"]
+    transformCMD: ["python", "./transform.py"]
     detectScriptIO:
       input:
         mode: env
@@ -32,4 +33,10 @@ spec:
       output:
         mode: env
         envName: "TRANSFORM_OUTPUT_PATH"
-
+    container: 
+      image: containerizedtransformer:latest
+      workingDir: "/m2k/"
+      keepAliveCommand: ["tail", "-f", "/dev/null"]
+      build:
+        dockerfile: "Dockerfile"
+        context: "."
