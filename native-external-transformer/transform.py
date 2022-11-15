@@ -63,7 +63,10 @@ def main():
         exit(0)
     services = transform(inputPath)
     outDir = os.path.dirname(outputPath)
-    os.mkdir(outDir)
+    try:
+        os.mkdir(outDir)
+    except FileExistsError:
+        pass
     with open(outputPath, "w+") as f:
         json.dump(services, f)
 

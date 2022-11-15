@@ -19,15 +19,15 @@ spec:
   config:
     platforms: 
       - "darwin"
-    directoryDetectCMD: ["python", "./detect.py"]
-    transformCMD: ["python", "./transform.py"]
-    detectScriptIO:
+    directoryDetect:
+      cmd: ["python", "./detect.py"]
       input:
         mode: env
         envName: "DETECT_INPUT_PATH"
       output:
         mode: arg
-    transformScriptIO:
+    transform: 
+      cmd: ["python", "./transform.py"]
       input:
         mode: arg
       output:
