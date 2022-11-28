@@ -19,7 +19,8 @@ import yaml
 
 # Parse I/O
 def parseIO(ioEnvNames, printTag):
-    args = sys.argv
+    inputPath = ''
+    outputPath = ''
     if len(sys.argv) < 3:
             print(printTag + ' Input/Output path not specified in script CLI...checking environment variables')
             if ioEnvNames[0] in os.environ:
@@ -35,9 +36,14 @@ def parseIO(ioEnvNames, printTag):
                 print(printTag + ' Output path not specified in environment as well')
                 exit(0)
     else:
-        inputPath = sys.argv[1] 
-        outputPath = sys.argv[2]
-        print(printTag + ' Input/Output path received through script CLI')
+        for arg in sys.argv:
+            if 'input=' in arg:
+                tokens = arg.split("=")
+                inputPath = tokens[1]
+            if 'output=' in arg:
+                tokens = arg.split("=")
+                outputPath = tokens[1]
+        print('%s Input path: [%s], Output path: [%s]. Data received from CLI' % (printTag, inputPath, outputPath))
     if len(inputPath) == 0 or len(outputPath) == 0:
         print(printTag + ' Input/Output path not specified in script cli as well')
         exit(0)
