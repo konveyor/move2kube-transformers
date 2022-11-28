@@ -15,13 +15,17 @@ import sys
 import os
 import json
 import xml.etree.ElementTree as ET
+from parseio import parseIO
 PomFile = "pom.xml"
+LogTag = "<DETECT SCRIPT>"
 
 # Performs the detection of pom file and extracts service name
 def detect(inputPath):
+    print(LogTag + ' Input file of transformer: ' + inputPath)
     with open(inputPath) as f:
         data = f.read()
         detectInput = json.loads(data)
+        print(LogTag + ' Input data: ' + str(detectInput))
         services = {}
         for rootDir, _, fileList in os.walk(detectInput["InputDirectory"]):
                 for fileName in fileList:
@@ -39,10 +43,12 @@ def detect(inputPath):
 
 # Entry-point of detect script
 def main():
-    services = detect(sys.argv[1])
-    outDir = "/var/tmp/m2k_detect_output"
+    ioEnvNames = ['M2K_DETECT_INPUT_PATH', 'M2K_DETECT_OUTPUT_PATH']
+    inputPath, outputPath = parseIO(ioEnvNames, LogTag)
+    services = detect(inputPath)
+    outDir = os.path.dirname(outputPath)
     os.mkdir(outDir)
-    with open(os.path.join(outDir, "m2k_detect_output.json"), "w+") as f:
+    with open(outputPath, "w+") as f:
         json.dump(services, f)
 
 if __name__ == '__main__':

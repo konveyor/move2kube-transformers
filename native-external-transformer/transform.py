@@ -15,6 +15,8 @@ import sys
 import os
 import json
 import yaml
+from parseio import parseIO
+LogTag = "<TRANSFORM SCRIPT>"
 
 # Performs the transformation for the given service
 def transform(artifactsPath):
@@ -23,14 +25,14 @@ def transform(artifactsPath):
     with open(artifactsPath) as f:
         data = f.read()
         artifactsData = json.loads(data)
-        newArtifacts = artifactsData["NewArtifacts"]
-        print('Number of new artifacts: ' + str(len(newArtifacts)))
+        newArtifacts = artifactsData["newArtifacts"]
+        print('%s Number of new artifacts: %d' % (LogTag, len(newArtifacts)))
         for artifact in newArtifacts:
             pathTemplate = "{{ SourceRel .ServiceFsPath }}"
             serviceName = artifact["name"]
             serviceDirs = artifact['paths']['ServiceDirectories']
-            print('Service Name: ' + serviceName)
-            print('Service Directories: ' + str(serviceDirs))
+            print(LogTag + ' Service Name: ' + serviceName)
+            print(LogTag + ' Service Directories: ' + str(serviceDirs))
             if len(serviceDirs) > 0:
                 # Create a path template for the service
                 pathTemplateName = serviceName.replace("-", "") + 'path'
@@ -52,10 +54,13 @@ def transform(artifactsPath):
 
 # Entry-point of transform script
 def main():
-    services = transform(sys.argv[1])
-    outDir = "/var/tmp/m2k_transform_output"
-    os.mkdir(outDir)
-    with open(os.path.join(outDir, "m2k_transform_output.json"), "w+") as f:
+    ioEnvNames = ['M2K_TRANSFORM_INPUT_PATH', 'M2K_TRANSFORM_OUTPUT_PATH']
+    inputPath, outputPath = parseIO(ioEnvNames, "<TRANSFORM SCRIPT>")
+    services = transform(inputPath)
+    outDir = os.path.dirname(outputPath)
+    if os.path.exists(outDir) == False:
+        os.mkdir(outDir)
+    with open(outputPath, "w+") as f:
         json.dump(services, f)
 
 if __name__ == '__main__':

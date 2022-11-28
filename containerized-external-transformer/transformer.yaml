@@ -19,11 +19,12 @@ spec:
   config:
     platforms: 
       - "darwin"
-    directoryDetectCMD: ["python", "./detect.py"]
+    directoryDetectCMD: ["python", "./detect.py", "input=$M2K_DETECT_INPUT_PATH", "output=$M2K_DETECT_OUTPUT_PATH"]
     transformCMD: ["python", "./transform.py"]
     container: 
       image: containerizedtransformer:latest
       workingDir: "/m2k/"
+      keepAliveCommand: ["tail", "-f", "/dev/null"]
       build:
         dockerfile: "Dockerfile"
         context: "."
