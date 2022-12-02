@@ -4,7 +4,7 @@ metadata:
   name: Nodejs-CustomFiles
   labels:
     move2kube.konveyor.io/task: containerization
-    move2kube.konveyor.io/built-in: true
+    move2kube.konveyor.io/built-in: false
 spec:
   class: "NodejsDockerfileGenerator"
   directoryDetect:
@@ -20,5 +20,3 @@ spec:
   override:
     matchLabels: 
       move2kube.konveyor.io/name: Nodejs-Dockerfile
-  config:
-    defaultNodejsVersion: "12"

@@ -3,7 +3,7 @@ kind: Transformer
 metadata:
   name: CustomClusterSelector
   labels:
-    move2kube.konveyor.io/built-in: true
+    move2kube.konveyor.io/built-in: false
     move2kube.konveyor.io/kubernetesclusterselector: true
 spec:
   class: "ClusterSelectorTransformer"
