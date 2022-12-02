@@ -3,7 +3,7 @@ kind: Transformer
 metadata:
   name: KubernetesWithCustomOutputDirectory
   labels:
-    move2kube.konveyor.io/built-in: true
+    move2kube.konveyor.io/built-in: false
 spec:
   class: "Kubernetes"
   directoryDetect:
