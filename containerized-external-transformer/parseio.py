@@ -1,4 +1,3 @@
-# OM NAMO GANAPATHAYEN NAMAHA
 #   Copyright IBM Corporation 2021
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
