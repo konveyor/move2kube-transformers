@@ -19,7 +19,10 @@ spec:
   config:
     platforms: 
       - "darwin"
-    directoryDetectCMD: ["python", "./detect.py", "input=$M2K_DETECT_INPUT_PATH", "output=$M2K_DETECT_OUTPUT_PATH"]
+    env:
+    - name: M2K_DETECT_OUTPUT_PATH
+      value: "/var/tmp/detect123/detectoutput.json"
+    directoryDetectCMD: ["python", "./detect.py", "input=$(M2K_DETECT_INPUT_PATH)", "output=$M2K_DETECT_OUTPUT_PATH"]
     transformCMD: ["python", "./transform.py"]
     container: 
       image: containerizedtransformer:latest

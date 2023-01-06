@@ -58,7 +58,7 @@ def main():
     inputPath, outputPath = parseIO(ioEnvNames, "<TRANSFORM SCRIPT>")
     services = transform(inputPath)
     outDir = os.path.dirname(outputPath)
-    os.mkdir(outDir)
+    os.makedirs(outDir)
     with open(outputPath, "w+") as f:
         json.dump(services, f)
 
