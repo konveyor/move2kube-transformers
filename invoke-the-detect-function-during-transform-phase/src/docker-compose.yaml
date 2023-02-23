@@ -1,0 +1,32 @@
+version: "3.1"
+services:
+  frontend-${ENV}:
+    image: quay.io/${MYNAMESPACE}-${APPSHORTNAME}/frontend${TAG}:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./sample-certs:/var/certs/
+    environment:
+      - env=${CODE}
+      - ACTIVE_ENV=${ENV}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+  backend:
+    image: quay.io/${MYNAMESPACE}-${APPSHORTNAME}/backend${TAG}:latest
+    volumes:
+      - ./sample-certs:/var/certs/
+    links:
+      - redis${ENV}:redis${ENV}
+    ports:
+      - ${UI-PORT}:8443
+    environment:
+      - env=${CODE}
+    deploy:
+      replicas: ${UI-REPLICAS}
+      placement:
+        constraints:
+          - node.a.b.c == true
+    secrets:
+      - my_secret
+secrets:
+  my_secret:
+    file: my_secret.txt
