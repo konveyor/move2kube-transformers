@@ -43,9 +43,34 @@ def transform(new_artifacts, old_artifacts):
 
     for confType in confTypes:
         if confType == "env":
-            logHostName = m2k.query({"id": "move2kube.ibmvpc.env.loghostname", "type": "Input", "description": "Enter the log DNA hostname : ", "default": ""})
-            ingestionKey = m2k.query({"id": "move2kube.ibmvpc.env.ingestionkey", "type": "Input", "description": "Enter the ingestion key : ", "default": ""})
-            logPortStr = m2k.query({"id": "move2kube.ibmvpc.env.logport", "type": "Input", "description": "Enter the log port : ", "default": "6514"})
+            loggingOption = m2k.query({"id": "move2kube.ibmvpc.env.loggingoption", "type": "Select", "description": "Choose a logging backend : ", "options": ["LogDNA", "SysLog"]})
+            if loggingOption == "LogDNA":
+                logDnaHostName = m2k.query({"id": "move2kube.ibmvpc.env.logdnahostname", "type": "Input", "description": "Enter the log DNA hostname : ", "default": ""})
+                logDnaIngestionKey = m2k.query({"id": "move2kube.ibmvpc.env.logdnaingestionkey", "type": "Input", "description": "Enter the ingestion key : ", "default": ""})
+                logDNAPortStr = m2k.query({"id": "move2kube.ibmvpc.env.logdnaport", "type": "Input", "description": "Enter the log port : ", "default": "6514"})
+                logDNATagsCountStr = m2k.query({"id": "move2kube.ibmvpc.env.logdnatags.count", "type": "Input", "description": "Enter the number of tags : ", "default": "0"})
+                logDNATagsCount = int(logDNATagsCountStr)
+                tags = []
+                for i in range(logDNATagsCount):
+                    tag = m2k.query({"id": "move2kube.ibmvpc.env.logdnatags.[%d].tag" % (i), "type": "Input", "description": "Enter the tag %d value : " % (i+1), "default": ""})
+                    tags.append(tag)
+                data["LogDNAHostName"] = logDnaHostName
+                data["LogDNAIngestionKey"] = logDnaIngestionKey
+                data["LogDNAPort"] = logDNAPortStr
+                data["LogDNATags"] = tags
+                data["LogDNA"] = loggingOption
+            else:
+                sysLogHostName = m2k.query({"id": "move2kube.ibmvpc.env.sysloghostname", "type": "Input", "description": "Enter the sysLog hostname : ", "default": ""})
+                sysLogServer = m2k.query({"id": "move2kube.ibmvpc.env.syslogserver", "type": "Input", "description": "Enter the sysLog server : ", "default": ""})
+                sysLogPort = m2k.query({"id": "move2kube.ibmvpc.env.syslogport", "type": "Input", "description": "Enter the sysLog log port : ", "default": "514"})
+                sysLogCert = m2k.query({"id": "move2kube.ibmvpc.env.syslogcert", "type": "MultiLine", "description": "Enter the sysLog cert : ", "default": ""})
+                sysLogKey = m2k.query({"id": "move2kube.ibmvpc.env.syslogkey", "type": "MultiLine", "description": "Enter the sysLog key : ", "default": ""})
+                data["SysLogHostName"] = sysLogHostName
+                data["SysLogServer"] = sysLogServer
+                data["SysLogPort"] = sysLogPort
+                data["SysLogCert"] = sysLogCert
+                data["SysLogKey"] = sysLogKey
+                data["SysLog"] = loggingOption
             volumes = {}
             for volumneName in volumeNames:
                 volumeSeed = m2k.query({"id": "move2kube.ibmvpc.env.volumes.[%d].seed" % (i), "type": "Input", "description": "Enter the volume %d seed : " % (i+1), "default": volumeName})
@@ -62,20 +87,17 @@ def transform(new_artifacts, old_artifacts):
                 envValue = m2k.query({"id": "move2kube.ibmvpc.env.envs.[%d].value" % (i), "type": "Input", "description": "Enter the environment variable %d value : " % (i+1), "default": ""})
                 envEnvs[envKey] = envValue
             data["EnvType"] = confType
-            data["LogHostName"] = logHostName
-            data["IngestionKey"] = ingestionKey
-            data["LogPort"] = logPortStr
             data["EnvVolumes"] = volumes
             data["EnvEnvs"] = envEnvs
 
             configs["VpcContractSec"]["envType"] = confType
 
         elif confType == "workload":
-            authsCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.authscount", "type": "Input", "description": "Enter the number of workloads : ", "default": "0"})
+            authsCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.authscount", "type": "Input", "description": "Enter the number of container registry auths : ", "default": "0"})
             authsCount = int(authsCountStr)
             auths = {}
             for i in range(authsCount):
-                serviceAdress = m2k.query({"id": "move2kube.ibmvpc.workload.service.[%d].address" % (i), "type": "Input", "description": "Enter the service %d address : " % (i+1), "default": ""})
+                serviceAdress = m2k.query({"id": "move2kube.ibmvpc.workload.service.[%d].address" % (i), "type": "Input", "description": "Enter the hostname of the container registry %d  : " % (i+1), "default": ""})
                 serviceUserName = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].username" % (i), "type": "Input", "description": "Enter the username : ", "default": ""})
                 servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].pass" % (i), "type": "Password", "description": "Enter the password : "})
                 auth = {"username": serviceUserName, "password": servicePass}
