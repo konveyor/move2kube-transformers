@@ -1,0 +1,5 @@
+{{- if .EnvEncryptedData}}env: "{{ .EnvEncryptedData }}"
+{{- end}}
+{{- if .WorkloadEncryptedData}}
+workload: "{{ .WorkloadEncryptedData }}"
+{{- end}}

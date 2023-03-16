@@ -1,7 +1,0 @@
-{{- if .EnvPass}}env: "hyper-protect-basic.{{encRsaCert .IbmHyperProtectCert .EnvPass | b64enc}}.
-  {{- encAesCbcPbkdf .EnvPass .EnvData | b64enc}}"
-{{- end}}
-{{- if .WorkloadPass}}
-workload: "hyper-protect-basic.{{encRsaCert .IbmHyperProtectCert .WorkloadPass | b64enc}}.
-  {{- encAesCbcPbkdf .WorkloadPass .WorkloadData | b64enc}}"
-{{- end}}
