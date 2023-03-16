@@ -93,7 +93,7 @@ def transform(new_artifacts, old_artifacts):
     for v in new_artifacts:
         cfAppsFilesPaths = v["paths"]["CfAppsFilesPaths"]
         for cfAppsFilePath in cfAppsFilesPaths:
-            s = fs.read(cfAppsFilePath)
+            s = fs.read_as_string(cfAppsFilePath)
             yamlData = yaml.loads(s)
             app = {}
             for applications in yamlData["spec"]["applications"]:

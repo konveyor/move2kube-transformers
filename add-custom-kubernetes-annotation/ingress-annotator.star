@@ -35,7 +35,7 @@ def transform(new_artifacts, old_artifacts):
                             'templateConfig': tplPathData})
         for f in fileList:
             filePath = fs.path_join(yamlsPath, f)
-            s = fs.read(filePath)
+            s = fs.read_as_string(filePath)
             yamlData = yaml.loads(s)
             if yamlData['kind'] != 'Ingress':
                 continue
