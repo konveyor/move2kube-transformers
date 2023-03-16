@@ -49,7 +49,7 @@ def transform(new_artifacts, old_artifacts):
 
 # Extracts service name from pom file
 def getServiceName(filePath):
-    data = fs.read(filePath)
+    data = fs.read_as_string(filePath)
     lines = data.splitlines()
     for l in lines:
         if re.search("^[\t]<artifactId", l):
