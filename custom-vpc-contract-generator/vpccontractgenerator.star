@@ -63,8 +63,8 @@ def transform(new_artifacts, old_artifacts):
                 sysLogHostName = m2k.query({"id": "move2kube.ibmvpc.env.sysloghostname", "type": "Input", "description": "Enter the sysLog hostname : ", "default": ""})
                 sysLogServer = m2k.query({"id": "move2kube.ibmvpc.env.syslogserver", "type": "Input", "description": "Enter the sysLog server : ", "default": ""})
                 sysLogPort = m2k.query({"id": "move2kube.ibmvpc.env.syslogport", "type": "Input", "description": "Enter the sysLog log port : ", "default": "514"})
-                sysLogCert = m2k.query({"id": "move2kube.ibmvpc.env.syslogcert", "type": "MultiLine", "description": "Enter the sysLog cert : ", "default": ""})
-                sysLogKey = m2k.query({"id": "move2kube.ibmvpc.env.syslogkey", "type": "MultiLine", "description": "Enter the sysLog key : ", "default": ""})
+                sysLogCert = m2k.query({"id": "move2kube.ibmvpc.env.syslogcert", "type": "MultiLineInput", "description": "Enter the sysLog cert : ", "default": ""})
+                sysLogKey = m2k.query({"id": "move2kube.ibmvpc.env.syslogkey", "type": "MultiLineInput", "description": "Enter the sysLog key : ", "default": ""})
                 data["SysLogHostName"] = sysLogHostName
                 data["SysLogServer"] = sysLogServer
                 data["SysLogPort"] = sysLogPort
