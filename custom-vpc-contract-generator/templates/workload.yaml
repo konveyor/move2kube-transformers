@@ -1,4 +1,5 @@
 {{- if .WorkloadType}}type: workload
+{{- if .Auths}}
 auths:
   {{- range $k, $v := .Auths}}
   {{$k}}:
@@ -6,22 +7,14 @@ auths:
     {{$vk}}: {{$vv}}
     {{- end}}
   {{- end}}
+{{- end}}
 compose:
   archive: "{{ .composeDigest | b64enc }}"
-{{- if or .dctImages .rhsImages }}
+{{- if .dctImages}}
 images: {{- end}}
 {{- if .dctImages}}
   dct:
     {{- range $k, $v := .dctImages}}
-    {{$k}}:
-      {{- range $vk, $vv := $v}}
-      {{$vk}}: {{$vv}}
-      {{- end}}
-    {{- end}}
-{{- end}}
-{{- if .rhsImages}}
-  rhs:
-    {{- range $k, $v := .rhsImages}}
     {{$k}}:
       {{- range $vk, $vv := $v}}
       {{$vk}}: {{$vv}}
