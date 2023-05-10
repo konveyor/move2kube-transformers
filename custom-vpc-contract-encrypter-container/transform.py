@@ -14,9 +14,19 @@
 
 import os
 import json
+import yaml
 from parseio import parseIO
 import subprocess
 LogTag = "<TRANSFORM SCRIPT>"
+
+yaml.SafeDumper.org_represent_str = yaml.SafeDumper.represent_str
+
+def repr_str(dumper, data):
+    if '\n' in data:
+        return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='|')
+    return dumper.org_represent_str(data)
+
+yaml.add_representer(str, repr_str, Dumper=yaml.SafeDumper)
 
 # Performs the transformation for the given service
 def transform(artifactsPath):
@@ -35,12 +45,29 @@ def transform(artifactsPath):
             filenames = next(os.walk("./"), (None, None, []))
             print(filenames)
             if "envType" in new_artifact["configs"]["VpcContractSec"].keys():
-                with open(os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml'), 'r') as file: 
+                print('generate the signing key')
+                os.popen("sh gen-sign-key.sh").read()
+                with open('public.pem') as f:
+                    signingKey = f.read()
+                    # print('signingKey:', signingKey)
+
+                print('save the signingKey in the env.yaml')
+                t111 = os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')
+                with open(t111) as f:
+                    envYaml = yaml.safe_load(f)
+                    # print('envYaml:', envYaml)
+                    envYaml['signingKey'] = signingKey
+                    # print('envYaml:', envYaml)
+                with open(t111, 'w') as f:
+                    yaml.safe_dump(envYaml, f, width=float('inf'))
+                # print('done saving the signingKey in the env.yaml')
+
+                with open(t111, 'r') as file: 
                     envData = file.read()
                     data["EnvData"] = envData
                     # cmd_env = {"ENV": os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')}
                     # data["EnvEncryptedData"] = subprocess.check_output(["sh", "env.sh"], env=cmd_env)
-                    os.environ["ENV"] = os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')
+                    os.environ["ENV"] = t111
                     data["EnvEncryptedData"] = os.popen("sh env.sh").read()[:-1]
             if "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
                 with open(os.path.join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'), 'r') as file: 
@@ -52,6 +79,14 @@ def transform(artifactsPath):
                     data["WorkloadEncryptedData"] = os.popen("sh workload.sh").read()[:-1]
             if not ("EnvData" in data or "WorkloadData" in data):
                 pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/user-data.yaml'})
+
+            print('sign the contract')
+            with open('contract.txt', 'w') as f:
+                f.write(data["WorkloadEncryptedData"])
+                f.write(data["EnvEncryptedData"])
+            data["WorkloadEncryptedDataSignature"] = os.popen("sh sign.sh").read()[:-1]
+
+            print('create the pathmapping')
             pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
 
