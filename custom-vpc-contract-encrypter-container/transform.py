@@ -62,7 +62,7 @@ def transform(artifactsPath):
                     yaml.safe_dump(envYaml, f, width=float('inf'))
                 # print('done saving the signingKey in the env.yaml')
 
-                with open(t111, 'r') as file: 
+                with open(t111, 'r') as file:
                     envData = file.read()
                     data["EnvData"] = envData
                     # cmd_env = {"ENV": os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')}

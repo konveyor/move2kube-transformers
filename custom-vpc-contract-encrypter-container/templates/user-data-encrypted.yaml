@@ -3,3 +3,6 @@
 {{- if .WorkloadEncryptedData}}
 workload: "{{ .WorkloadEncryptedData }}"
 {{- end}}
+{{- if .WorkloadEncryptedDataSignature}}
+envWorkloadSignature: "{{ .WorkloadEncryptedDataSignature }}"
+{{- end}}
