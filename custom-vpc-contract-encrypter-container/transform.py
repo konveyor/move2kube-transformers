@@ -80,11 +80,14 @@ def transform(artifactsPath):
             if not ("EnvData" in data or "WorkloadData" in data):
                 pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/user-data.yaml'})
 
-            print('sign the contract')
-            with open('contract.txt', 'w') as f:
-                f.write(data["WorkloadEncryptedData"])
-                f.write(data["EnvEncryptedData"])
-            data["WorkloadEncryptedDataSignature"] = os.popen("sh sign.sh").read()[:-1]
+            if "envType" in new_artifact["configs"]["VpcContractSec"].keys() and "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
+                print('sign the contract')
+                with open('contract.txt', 'w') as f:
+                    f.write(data["WorkloadEncryptedData"])
+                    f.write(data["EnvEncryptedData"])
+                data["WorkloadEncryptedDataSignature"] = os.popen("sh sign.sh").read()[:-1]
+            else:
+                print('either workload or env section is missing, skipping signing the contract')
 
             print('create the pathmapping')
             pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
