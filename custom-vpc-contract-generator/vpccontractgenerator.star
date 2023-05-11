@@ -12,10 +12,44 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+def directory_detect(dir):
+    fileList = fs.get_files_with_pattern(dir, '.yaml')
+    print(fileList)
+    for fPath in fileList:
+        fName = fs.path_base(fPath)
+        fDir = fPath[:-len(fName)]
+        if fPath.endswith('docker-compose.yaml'):
+            return  {"": [{
+                "paths": {"DockerComposeDir": [fDir]} }
+            ]}
+        data = fs.read(fPath)
+        if data.startswith('version: "3'):
+            return  {"": [{
+                "paths": {"DockerComposeDir": [fDir]} }
+            ]}
+
 # Creates IBM VPC contract file
 def transform(new_artifacts, old_artifacts):
     pathMappings = []
     artifacts = []
+
+    dcPath = ''
+    print('new_artifacts', new_artifacts)
+    if len(new_artifacts) > 0:
+        # print('no new artifacts provided')
+        # return {'pathMappings': pathMappings, 'artifacts': artifacts}
+        if len(new_artifacts) > 1:
+            print('more than one artifact, ignoring everything but the first one')
+        new_artifact = new_artifacts[0]
+        print('using the new artifact:', new_artifact)
+        dcPaths = new_artifact['paths']['DockerComposeDir']
+        if len(dcPaths) == 0:
+            print('no docker compose directories provided')
+            return {'pathMappings': pathMappings, 'artifacts': artifacts}
+        if len(dcPaths) > 1:
+            print('more than one docker compose dir, ignoring everything but the first one')
+        dcPath = dcPaths[0]
+        print('using the docker compose directory:', dcPath)
 
     ## Q&A to fill the contract file
     usesVPC = m2k.query({"id": "move2kube.ibmvpc.enabled", "type": "Select", "description": "Do you use IBM VPC?", "hints": ["A VPC contract file will be created."], "options": ["Yes", "No"]})
@@ -90,10 +124,18 @@ def transform(new_artifacts, old_artifacts):
                 servicePass = m2k.query({"id": "move2kube.ibmvpc.env.service.[%d].pass" % (i), "type": "Password", "description": "Enter the password : "})
                 auth = {"username": serviceUserName, "password": servicePass}
                 auths[serviceAdress] = auth
-            composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": "version: \"3.0\"\nservices:\nvolumes:"})
 
-            fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
-            composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
+            composeDigest = ''
+            if len(dcPath) > 0:
+                print('using the existing docker compose directory:', dcPath)
+                composeDigest = archive.arch_tar_gzip_str(dcPath)
+            else:
+                print('did not find an existing docker compose file. Asking the user instead')
+                composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": "version: \"3.0\"\nservices:\nvolumes:"})
+                fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
+                composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
+            print('composeDigest', composeDigest)
+
             dctImagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.dctimagescount", "type": "Input", "description": "Enter the number of images signed using dct: ", "default": "0"})
             dctImagesCount = int(dctImagesCountStr)
             dctImages = {}

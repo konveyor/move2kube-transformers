@@ -7,11 +7,13 @@ metadata:
 spec:
   class: "Starlark"
   directoryDetect:
-    levels: 0
+    levels: 1
   config:
     starFile: "vpccontractgenerator.star"
-  invokedByDefault:
-    enabled: true
+  # invokedByDefault:
+  #   enabled: true
+  consumes:
+    Service: {}
   produces:
     VpcContract:
       disabled: false
