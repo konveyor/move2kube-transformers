@@ -137,7 +137,7 @@ def transform(new_artifacts, old_artifacts):
                 composeContent = m2k.query({"id": "move2kube.ibmvpc.workload.compose", "type": "MultiLineInput", "description": "Enter the docker compose file contents : ", "default": "version: \"3.0\"\nservices:\nvolumes:"})
                 fs.write(fs.path_join(temp_dir, "docker-compose.yaml"), composeContent)
                 composeDigest = archive.arch_tar_gzip_str(fs.path_join(temp_dir, "docker-compose.yaml"))
-            print('composeDigest', composeDigest)
+            # print('composeDigest', composeDigest)
 
             dctImagesCountStr = m2k.query({"id": "move2kube.ibmvpc.workload.dctimagescount", "type": "Input", "description": "Enter the number of images signed using dct: ", "default": "0"})
             dctImagesCount = int(dctImagesCountStr)
