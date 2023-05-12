@@ -14,11 +14,14 @@
 
 def directory_detect(dir):
     fileList = fs.get_files_with_pattern(dir, '.yaml')
+    fileListYml = fs.get_files_with_pattern(dir, '.yml')
+    for x in fileListYml:
+        fileList.append(x)
     print(fileList)
     for fPath in fileList:
         fName = fs.path_base(fPath)
         fDir = fPath[:-len(fName)]
-        if fPath.endswith('docker-compose.yaml'):
+        if fPath.endswith('docker-compose.yaml') or fPath.endswith('docker-compose.yml'):
             return  {"": [{
                 "paths": {"DockerComposeDir": [fDir]} }
             ]}
