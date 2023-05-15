@@ -85,7 +85,7 @@ def transform(artifactsPath):
                 with open('contract.txt', 'w') as f:
                     f.write(data["WorkloadEncryptedData"])
                     f.write(data["EnvEncryptedData"])
-                data["WorkloadEncryptedDataSignature"] = os.popen("sh sign.sh").read()[:-1]
+                data["WorkloadEncryptedDataSignature"] = os.popen("sh sign.sh").read()
             else:
                 print('either workload or env section is missing, skipping signing the contract')
 
