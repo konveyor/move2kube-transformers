@@ -1,0 +1,18 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: DockerComposePreprocessor
+  labels:
+    move2kube.konveyor.io/built-in: false
+spec:
+  class: "Starlark"
+  directoryDetect:
+    levels: 1
+  consumes:
+    Service:
+      merge: false
+  produces:
+    InvokeDetect:
+      disabled: false
+  config:
+    starFile: "preprocessor.star"
