@@ -5,3 +5,7 @@
 workload: |
 {{ .WorkloadData | indent 2}}
 {{- end}}
+{{- if .AttestationData}}
+{{.AttestationData }}
+{{- end}}
+

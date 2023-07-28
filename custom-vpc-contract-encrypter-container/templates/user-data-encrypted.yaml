@@ -6,3 +6,7 @@ workload: "{{ .WorkloadEncryptedData }}"
 {{- if .WorkloadEncryptedDataSignature}}
 envWorkloadSignature: "{{ .WorkloadEncryptedDataSignature }}"
 {{- end}}
+{{- if .AttestationEncryptedData}}
+attestationPublicKey: "{{ .AttestationEncryptedData }}"
+{{- end}}
+

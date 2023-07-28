@@ -15,6 +15,7 @@
 import os
 import json
 import yaml
+import shutil
 from parseio import parseIO
 import subprocess
 LogTag = "<TRANSFORM SCRIPT>"
@@ -53,30 +54,49 @@ def transform(artifactsPath):
 
                 print('save the signingKey in the env.yaml')
                 t111 = os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')
-                with open(t111) as f:
+                shutil.copy(t111, 'env2.yaml')
+                with open("env2.yaml") as f:
                     envYaml = yaml.safe_load(f)
                     # print('envYaml:', envYaml)
                     envYaml['signingKey'] = signingKey
                     # print('envYaml:', envYaml)
-                with open(t111, 'w') as f:
+                with open("env2.yaml", 'w') as f:
                     yaml.safe_dump(envYaml, f, width=float('inf'))
                 # print('done saving the signingKey in the env.yaml')
 
                 with open(t111, 'r') as file:
-                    envData = file.read()
+                    envData = file.read().removesuffix('\n')
                     data["EnvData"] = envData
                     # cmd_env = {"ENV": os.path.join(new_artifact["paths"]["VpcContract"][0], 'env.yaml')}
                     # data["EnvEncryptedData"] = subprocess.check_output(["sh", "env.sh"], env=cmd_env)
-                    os.environ["ENV"] = t111
+                    os.environ["ENV"] = os.path.join('env2.yaml')
                     data["EnvEncryptedData"] = os.popen("sh env.sh").read()[:-1]
             if "workloadType" in new_artifact["configs"]["VpcContractSec"].keys():
                 with open(os.path.join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml'), 'r') as file: 
-                    workloadData = file.read()
+                    workloadData = file.read().removesuffix('\n')
                     data["WorkloadData"] = workloadData
                     # cmd_env = {"WORKLOAD": os.path.join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml')}
                     # data["WorkloadEncryptedData"] = subprocess.check_output(["sh", "workload.sh"], env=cmd_env)
                     os.environ["WORKLOAD"] = os.path.join(new_artifact["paths"]["VpcContract"][0], 'workload.yaml')
                     data["WorkloadEncryptedData"] = os.popen("sh workload.sh").read()[:-1]
+            if "attestation" in new_artifact["configs"]["VpcContractSec"].keys():
+                with open(os.path.join(new_artifact["paths"]["VpcContract"][0], 'attestation.yaml'), 'r') as file:
+                    attestationData = file.read() 
+                    data["AttestationData"] = attestationData
+                    value = data["AttestationData"]
+                    print("value", value)
+                    subvalue = value[22:]
+                    newstring = subvalue.replace("\\n", "\n")
+                    newstring1 = newstring.replace('"','')
+                    file = open("publickey", "w")
+                    file.write(newstring1)
+                    file.close()
+                    os.environ["ATTESTATION"] = os.path.join('publickey')
+                    data["AttestationEncryptedData"] = os.popen("sh attestation.sh").read()[:-1]
+                    print("removing public key")
+                    #os.remove('publickey')
+                    #os.environ["ATTESTATION"] = os.path.join(new_artifact["paths"]["VpcContract"][0], 'attestation.yaml')
+                    #data["WorkloadEncryptedData"] = os.popen("sh workload.sh").read()[:-1]
             if not ("EnvData" in data or "WorkloadData" in data):
                 pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/user-data.yaml'})
 

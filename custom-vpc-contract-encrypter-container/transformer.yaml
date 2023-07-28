@@ -15,7 +15,7 @@ spec:
       - "darwin"
     transformCMD: ["python", "./transform.py"]
     container: 
-      image: kmehant/vpc-encrypter:v3
+      image: kmehant/vpc-encrypter:v4
       workingDir: "/m2k/"
       keepAliveCommand: ["tail", "-f", "/dev/null"]
       build:

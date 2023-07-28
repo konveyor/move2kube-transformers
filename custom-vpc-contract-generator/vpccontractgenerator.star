@@ -59,7 +59,7 @@ def transform(new_artifacts, old_artifacts):
     if usesVPC == "No":
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
 
-    confTypes = m2k.query({"id": "move2kube.ibmvpc.types", "type": "MultiSelect", "description": "Choose the types : ", "options": ["workload", "env"]})
+    confTypes = m2k.query({"id": "move2kube.ibmvpc.types", "type": "MultiSelect", "description": "Choose the types : ", "options": ["workload", "env" , "attestation"]})
 
     if len(confTypes) == 0:
         return {'pathMappings': pathMappings, 'artifacts': artifacts}
@@ -166,7 +166,7 @@ def transform(new_artifacts, old_artifacts):
                 volumeMount = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].mount" % (i), "type": "Input", "description": "Enter the volume %d mount : " % (i+1), "default": ""})
                 if volumeMount != "":
                     volume["mount"] = volumeMount
-                volumeFS = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].fs" % (i), "type": "Input", "description": "Enter the volume %d filesystem : " % (i+1), "default": ""})
+                volumeFS = m2k.query({"id": "move2kube.ibmvpc.workload.volumes.[%d].fs" % (i), "type": "Select", "description": "choose the filesystem : " , "options": ["ext4", "btrfs", "xfs"]})
                 if volumeFS != "":
                     volume["filesystem"] = volumeFS
                 workloadVolumes[volumeName] = volume
@@ -189,12 +189,52 @@ def transform(new_artifacts, old_artifacts):
             data["WorkloadEnvs"] = workloadEnvs
 
             configs["VpcContractSec"]["workloadType"] = confType
+        elif confType == "attestation":
+            data["AttestationType"] = confType
+            attestationpublickey = m2k.query({"id": "move2kube.ibmvpc.attestation.publickey", "type": "Input", "description": "Enter the attestation public Key :", "default": ""})
+            data["AttestationPublicKey"] = attestationpublickey
+            configs["VpcContractSec"]["attestation"] = confType
+
     if not "WorkloadType" in data:
         pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/workload.yaml'})
     if not "EnvType" in data:
         pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/env.yaml'})
 
+    if not "AttestationType" in data:
+        pathMappings.append({'type': 'Delete', 'destinationPath': 'ibm_vpc_artifacts/attestation.yaml'})
+
     artifact = {'name': 'VpcContract', 'type': 'VpcContract', 'paths': {'VpcContract': [fs.path_join(output_dir, 'ibm_vpc_artifacts')]}, 'configs': configs}
     artifacts.append(artifact)
+
+    print('context_dir', context_dir)
+    #env
+    my_env_template_path = fs.path_join(fs.path_join(context_dir, 'templates'), 'env.yaml')
+    print('my_env_template_path', my_env_template_path)
+    my_env_template = fs.read_as_string(my_env_template_path)
+    print('my_env_template', my_env_template)
+    my_env_template_filled = template.eval_template(my_env_template, data)
+    print('my_env_template_filled', my_env_template_filled)
+    # workload
+    my_workload_template_path = fs.path_join(fs.path_join(context_dir, 'templates'), 'workload.yaml')
+    print('my_workload_template_path', my_workload_template_path)
+    my_workload_template = fs.read_as_string(my_workload_template_path)
+    print('my_workload_template', my_workload_template)
+    my_workload_template_filled = template.eval_template(my_workload_template, data)
+    print('my_workload_template_filled', my_workload_template_filled)
+
+    #attestation
+    my_attestation_template_path = fs.path_join(fs.path_join(context_dir, 'templates'), 'attestation.yaml')
+    print('my_attestation_template_path', my_attestation_template_path)
+    my_attestation_template = fs.read_as_string(my_attestation_template_path)
+    print('my_attestation_template', my_attestation_template)
+    my_attestation_template_filled = template.eval_template(my_attestation_template, data)
+    print('my_attestation_template_filled', my_attestation_template_filled)
+
+    # user data
+    data['EnvData'] = my_env_template_filled
+    data['WorkloadData'] = my_workload_template_filled
+    data['AttestationData']  = my_attestation_template_filled
+
+
     pathMappings.append({'type': 'Template', 'templateConfig': data, 'destinationPath': 'ibm_vpc_artifacts/'})
     return {'pathMappings': pathMappings, 'artifacts': artifacts}
