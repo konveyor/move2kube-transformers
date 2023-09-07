@@ -1,0 +1,18 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: StatefulsetHeadlessService
+  labels: 
+    move2kube.konveyor.io/built-in: false
+spec:
+  class: "Starlark"
+  consumes:
+    KubernetesYamls: 
+      merge: false
+      # Ensures a artifact of this type gets immediately intercepted by this transformer
+      mode: "MandatoryPassThrough" 
+  produces:
+    KubernetesYamls:
+      disabled: false
+  config:
+    starFile: "statefulset-headless-service-tlspassthrough.star"
