@@ -1,0 +1,4 @@
+ingresshostdomain: put.the.hostdomain.of.ingress.here
+registryurl: put.the.image.registry.url.here
+registrynamespace: put.the.registry.namespace.here
+imagetag: put.the.image.tag.here
