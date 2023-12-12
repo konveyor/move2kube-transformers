@@ -1,0 +1,18 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: HelmChartGenerator
+  labels: 
+    move2kube.konveyor.io/built-in: false
+spec:
+  class: WASM
+  directoryDetect:
+    levels: -1
+  consumes:
+    Service:
+      merge: false
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"
+  config:
+    wasm_module: helmchartgen.wasm
