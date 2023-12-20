@@ -1,0 +1,2 @@
+{{- if .AttestationType}}attestationPublicKey: {{ .AttestationPublicKey }}
+{{- end}}  
