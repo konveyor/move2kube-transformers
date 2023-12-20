@@ -21,12 +21,14 @@ func DirectoryDetect(inputPath string) map[string]interface{} {
 	jsonFile, err := os.Open(inputPath)
 	if err != nil {
 		fmt.Println(err)
+
 	}
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var data map[string]interface{}
 	err = json.Unmarshal(byteValue, &data)
 	dataFilePath := filepath.Join(data["InputDirectory"].(string), PomFile)
+
 	transform_return_data := make(map[string]interface{})
 	if _, err := os.Stat(dataFilePath); err == nil {
 		serviceName := getServiceName(dataFilePath)
@@ -42,8 +44,6 @@ func DirectoryDetect(inputPath string) map[string]interface{} {
 			},
 		}
 		return transform_return_data
-	} else {
-		fmt.Printf("native stat failed: %v\n", err)
 	}
 	return transform_return_data
 }
@@ -131,18 +131,19 @@ func main() {
 	action := os.Args[1]
 	var data map[string]interface{}
 	inputPath := os.Getenv(os.Args[2])
-	fmt.Println(inputPath)
+	// fmt.Println(inputPath)
 	if action == "detect" {
 		data = DirectoryDetect(inputPath)
 	} else {
 		data = Transform(inputPath)
 	}
 	outputPath := os.Getenv(os.Args[3])
-	fmt.Println(outputPath)
+	// fmt.Println(outputPath)
 	file, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
+	os.MkdirAll(filepath.Dir(outputPath), 0755)
 	err = ioutil.WriteFile(outputPath, file, 0644)
 	if err != nil {
 		panic(err)

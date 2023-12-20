@@ -1,3 +1,3 @@
-FROM scratch
+FROM ubuntu
 WORKDIR /m2k
 COPY . .
