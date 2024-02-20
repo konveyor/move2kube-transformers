@@ -195,9 +195,9 @@ func Transform(
 func RunDirectoryDetect(
 	inputJsonPtr uint32,
 	inputJsonLen uint32,
-	outputJsonPtr uint32,
-	outputJsonLen uint32,
-) int32 {
+	outputJsonPtrPtr uint32,
+	outputJsonLenPtr uint32,
+) (successOrError int32) {
 	fmt.Println("mycustomtransformer: RunDirectoryDetect start")
 	defer fmt.Println("mycustomtransformer: RunDirectoryDetect end")
 	transformInputJson := ptrToString(inputJsonPtr, inputJsonLen)
@@ -215,27 +215,26 @@ func RunDirectoryDetect(
 	outputJson, err := json.Marshal(output)
 	if err != nil {
 		fmt.Println("mycustomtransformer: failed to marshal")
-		// panic("mycustomtransformer: failed to marshal")
 		return -1
 	}
 	ptr := saveBytes(outputJson)
-	ptrr := (*uint32)(unsafe.Pointer(uintptr(outputJsonPtr)))
+	ptrr := (*uint32)(unsafe.Pointer(uintptr(outputJsonPtrPtr)))
 	*ptrr = ptr
-	ptrl := (*uint32)(unsafe.Pointer(uintptr(outputJsonLen)))
+	ptrl := (*uint32)(unsafe.Pointer(uintptr(outputJsonLenPtr)))
 	*ptrl = uint32(len(outputJson))
 	return 0
 }
 
 //go:export RunTransform
 func RunTransform(
-	transformInputJsonPtr uint32,
-	transformInputJsonLen uint32,
-	transformOutputJsonPtr uint32,
-	transformOutputJsonLen uint32,
-) int32 {
+	inputJsonPtr uint32,
+	inputJsonLen uint32,
+	outputJsonPtrPtr uint32,
+	outputJsonLenPtr uint32,
+) (successOrError int32) {
 	fmt.Println("mycustomtransformer: RunTransform start")
 	defer fmt.Println("mycustomtransformer: RunTransform end")
-	transformInputJson := ptrToString(transformInputJsonPtr, transformInputJsonLen)
+	transformInputJson := ptrToString(inputJsonPtr, inputJsonLen)
 	input := TransformInput{}
 	if err := json.Unmarshal([]byte(transformInputJson), &input); err != nil {
 		fmt.Printf("mycustomtransformer: failed to unmarshal input. Error: %q\n", err)
@@ -252,14 +251,13 @@ func RunTransform(
 	}
 	outputJson, err := json.Marshal(output)
 	if err != nil {
-		fmt.Println("mycustomtransformer: failed to marshal")
-		// panic("mycustomtransformer: failed to marshal")
+		fmt.Printf("mycustomtransformer: failed to marshal. Error: %q\n", err)
 		return -1
 	}
 	ptr := saveBytes(outputJson)
-	ptrr := (*uint32)(unsafe.Pointer(uintptr(transformOutputJsonPtr)))
+	ptrr := (*uint32)(unsafe.Pointer(uintptr(outputJsonPtrPtr)))
 	*ptrr = ptr
-	ptrl := (*uint32)(unsafe.Pointer(uintptr(transformOutputJsonLen)))
+	ptrl := (*uint32)(unsafe.Pointer(uintptr(outputJsonLenPtr)))
 	*ptrl = uint32(len(outputJson))
 	return 0
 }

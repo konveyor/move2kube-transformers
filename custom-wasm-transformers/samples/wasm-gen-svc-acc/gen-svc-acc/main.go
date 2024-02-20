@@ -188,9 +188,9 @@ func Transform(
 func RunDirectoryDetect(
 	inputJsonPtr uint32,
 	inputJsonLen uint32,
-	outputJsonPtr uint32,
-	outputJsonLen uint32,
-) int32 {
+	outputJsonPtrPtr uint32,
+	outputJsonLenPtr uint32,
+) (successOrError int32) {
 	fmt.Println("mycustomtransformer: RunDirectoryDetect start")
 	defer fmt.Println("mycustomtransformer: RunDirectoryDetect end")
 	return 0
@@ -198,24 +198,22 @@ func RunDirectoryDetect(
 
 //go:export RunTransform
 func RunTransform(
-	transformInputJsonPtr uint32,
-	transformInputJsonLen uint32,
-	transformOutputJsonPtr uint32,
-	transformOutputJsonLen uint32,
-) int32 {
+	inputJsonPtr uint32,
+	inputJsonLen uint32,
+	outputJsonPtrPtr uint32,
+	outputJsonLenPtr uint32,
+) (successOrError int32) {
 	fmt.Println("mycustomtransformer: RunTransform start")
 	defer fmt.Println("mycustomtransformer: RunTransform end")
-	transformInputJson := ptrToString(transformInputJsonPtr, transformInputJsonLen)
+	transformInputJson := ptrToString(inputJsonPtr, inputJsonLen)
 	input := TransformInput{}
 	if err := json.Unmarshal([]byte(transformInputJson), &input); err != nil {
 		fmt.Println("mycustomtransformer: failed to unmarshal")
-		// panic("mycustomtransformer: failed to unmarshal")
 		return -1
 	}
 	ps, as, err := Transform(input.NewArtifacts, input.AlreadySeenArtifacts)
 	if err != nil {
 		fmt.Printf("mycustomtransformer: failed to transform. Error: %q\n", err)
-		// panic("mycustomtransformer: failed to transform")
 		return -1
 	}
 	output := TransformOutput{
@@ -225,13 +223,12 @@ func RunTransform(
 	outputJson, err := json.Marshal(output)
 	if err != nil {
 		fmt.Println("mycustomtransformer: failed to marshal")
-		// panic("mycustomtransformer: failed to marshal")
 		return -1
 	}
 	ptr := saveBytes(outputJson)
-	ptrr := (*uint32)(unsafe.Pointer(uintptr(transformOutputJsonPtr)))
+	ptrr := (*uint32)(unsafe.Pointer(uintptr(outputJsonPtrPtr)))
 	*ptrr = ptr
-	ptrl := (*uint32)(unsafe.Pointer(uintptr(transformOutputJsonLen)))
+	ptrl := (*uint32)(unsafe.Pointer(uintptr(outputJsonLenPtr)))
 	*ptrl = uint32(len(outputJson))
 	return 0
 }
