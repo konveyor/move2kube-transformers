@@ -1,4 +1,4 @@
-module foo.com/b
+module mydomain.com/mypackage
 
 go 1.21.6
 
