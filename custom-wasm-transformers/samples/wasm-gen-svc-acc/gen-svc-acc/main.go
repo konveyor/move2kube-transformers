@@ -125,7 +125,6 @@ func Transform(
 			filePath := filepath.Join(yamlsPath, f.Name())
 			fmt.Printf("[DEBUG] filePath: '%s'\n", filePath)
 			inputBytes, err := os.ReadFile(filePath)
-			// _, err := os.ReadFile(filePath)
 			if err != nil {
 				fmt.Printf("[ERROR] read file filePath: '%s' . Error: %q\n", filePath, err)
 				continue
