@@ -150,10 +150,6 @@ func Transform(
 				continue
 			}
 			fmt.Printf("[DEBUG] svc_name %s\n", svc_name)
-			// 	// # if 'annotations' not in yamlData['metadata']:
-			// 	// #     yamlData['metadata']['annotations'] = {'kubernetes.io/ingress.class': 'haproxy'}
-			// 	// # else:
-			// 	// #     yamlData['metadata']['annotations']['kubernetes.io/ingress.class'] = 'haproxy'
 			svcAccYamlData := map[string]interface{}{
 				"apiVersion": "v1",
 				"kind":       "ServiceAccount",
