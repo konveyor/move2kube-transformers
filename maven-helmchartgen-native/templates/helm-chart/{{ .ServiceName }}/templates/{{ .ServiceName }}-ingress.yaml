@@ -1,0 +1,25 @@
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    creationTimestamp: null
+    labels:
+        move2kube.konveyor.io/service: <~ .ServiceName ~>
+    name: <~ .ServiceName ~>
+spec:
+    rules:
+        - host: '{{ .Values.ingresshostdomain }}'
+          http:
+            paths:
+                - backend:
+                    service:
+                        name: <~ .ServiceName ~>
+                        port:
+                            name: port-8080
+                  path: /gateway
+                  pathType: Prefix
+status:
+    loadBalancer: {}
+
+...
