@@ -50,12 +50,12 @@ spec:
       questions:
         - move2kube.services.*.*.servicetype
         - move2kube.target.*.ingress.ingressclassname
+        - move2kube.services.*.*.urlpath
         - move2kube.target.*.ingress.host
         - move2kube.target.*.ingress.tls
-    - name: new-category
+    - name: ports
       enabled: true
       questions:
-        - move2kube.services.*.*.urlpath
         - move2kube.services.*.ports
         - move2kube.services.*.port
     - name: git
