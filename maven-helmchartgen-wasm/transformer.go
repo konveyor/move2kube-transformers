@@ -16,27 +16,28 @@ const PomFile = "pom.xml"
 
 var input []byte = make([]byte, 2048)
 
-// Reads a null-terminated string (ala C strings) from the provided pointer
-func readPtr(dataPointer *int32) string {
-	nth := 0
-	var dataStr strings.Builder
-	pointer := uintptr(unsafe.Pointer(dataPointer))
-	for {
-		s := *(*int32)(unsafe.Pointer(pointer + uintptr(nth)))
-		if byte(s) == 0 {
-			break
-		}
+func unpack(combined uint64) (uint32, uint32) {
+	pointer := uint32(combined >> 32) // Extracts the upper 32 bits
+	size := uint32(combined)          // Extracts the lower 32 bits
+	return pointer, size
+}
 
-		dataStr.WriteByte(byte(s))
-		nth++
+func pack(pointer uint32, size uint32) uint64 {
+	return (uint64(pointer) << 32) | uint64(size)
+}
+
+func readData(dataPointer uint64) string {
+	pointer, size := unpack(dataPointer)
+	bytes := make([]byte, size)
+	for i := uint32(0); i < size; i++ {
+		bytes[i] = *(*byte)(unsafe.Pointer(uintptr(pointer) + uintptr(i)))
 	}
-
-	return dataStr.String()
+	return string(bytes)
 }
 
 //export directoryDetect
-func directoryDetect(dataPointer *int32) *int32 {
-	dir := readPtr(dataPointer)
+func directoryDetect(dataPointer uint64) uint64 {
+	dir := readData(dataPointer)
 	dataFilePath := filepath.Join(dir, PomFile)
 
 	transform_return_data := make(map[string]interface{})
@@ -58,11 +59,11 @@ func directoryDetect(dataPointer *int32) *int32 {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		r := make([]int32, 2)
-		r[0] = int32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
-		r[1] = int32(len(transform_return_data_byt))
 
-		return &r[0]
+		DDptr := uint32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
+		DDsize := uint32(len(transform_return_data_byt))
+
+		return pack(DDptr, DDsize)
 	} else {
 		fmt.Printf("wasm stat failed: %v\n", err)
 	}
@@ -73,16 +74,15 @@ func directoryDetect(dataPointer *int32) *int32 {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	r := make([]int32, 2)
-	r[0] = int32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
-	r[1] = int32(len(transform_return_data_byt))
+	DDptr := uint32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
+	DDsize := uint32(len(transform_return_data_byt))
 
-	return &r[0]
+	return pack(DDptr, DDsize)
 }
 
 //export transform
-func transform(dataPointer *int32) *int32 {
-	rawData := readPtr(dataPointer)
+func transform(dataPointer uint64) uint64 {
+	rawData := readData(dataPointer)
 
 	var data map[string]interface{}
 	err := json.Unmarshal([]byte(rawData), &data)
@@ -138,11 +138,10 @@ func transform(dataPointer *int32) *int32 {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	r := make([]int32, 2)
-	r[0] = int32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
-	r[1] = int32(len(transform_return_data_byt))
+	TTptr := uint32(uintptr(unsafe.Pointer(&(transform_return_data_byt[0]))))
+	TTsize := uint32(len(transform_return_data_byt))
 
-	return &r[0]
+	return pack(TTptr, TTsize)
 }
 
 // getServiceName extracts service name from pom file
