@@ -28,11 +28,8 @@ func pack(pointer uint32, size uint32) uint64 {
 
 func readData(dataPointer uint64) string {
 	pointer, size := unpack(dataPointer)
-	bytes := make([]byte, size)
-	for i := uint32(0); i < size; i++ {
-		bytes[i] = *(*byte)(unsafe.Pointer(uintptr(pointer) + uintptr(i)))
-	}
-	return string(bytes)
+	dataStr := unsafe.String((*byte)(unsafe.Pointer(uintptr(pointer))), size)
+	return strings.Clone(dataStr)
 }
 
 //export directoryDetect

@@ -16,4 +16,4 @@ spec:
       move2kube.konveyor.io/built-in: "true"
   config:
     wasm_module: helmchartgen.wasm
-    execution_mode: compiler
+    compile_aot: true
