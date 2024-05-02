@@ -19,6 +19,7 @@ spec:
   config:
     platforms: 
       - "darwin"
+    copyUIDGID: false
     env:
     - name: M2K_DETECT_OUTPUT_PATH
       value: "/var/tmp/detect123/detectoutput.json"
