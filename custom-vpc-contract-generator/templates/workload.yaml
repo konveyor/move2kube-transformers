@@ -1,0 +1,39 @@
+{{- if .WorkloadType}}type: workload
+{{- if .Auths}}
+auths:
+  {{- range $k, $v := .Auths}}
+  {{$k}}:
+    {{- range $vk, $vv := $v}}
+    {{$vk}}: {{$vv}}
+    {{- end}}
+  {{- end}}
+{{- end}}
+compose:
+  archive: "{{ .composeDigest | b64enc }}"
+{{- if .dctImages}}
+images: {{- end}}
+{{- if .dctImages}}
+  dct:
+    {{- range $k, $v := .dctImages}}
+    {{$k}}:
+      {{- range $vk, $vv := $v}}
+      {{$vk}}: {{$vv}}
+      {{- end}}
+    {{- end}}
+{{- end}}
+{{- if .WorkloadVolumes }}
+volumes:
+  {{- range $k, $v := .WorkloadVolumes}}
+  {{$k}}:
+    {{- range $vk, $vv := $v}}
+    {{$vk}}: "{{$vv}}"
+    {{- end}}
+  {{- end}}
+{{- end}}
+{{- if .WorkloadEnvs}}
+env:
+  {{- range $vk, $vv := .WorkloadEnvs}}
+  {{$vk}}: "{{$vv}}"
+  {{- end}}
+{{- end}}
+{{- end}}

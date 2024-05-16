@@ -1,0 +1,6 @@
+FROM python:3.9
+# FROM registry.access.redhat.com/ubi8/python-36
+WORKDIR /m2k
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+COPY . .

@@ -1,0 +1,12 @@
+{{- if .EnvEncryptedData}}env: "{{ .EnvEncryptedData }}"
+{{- end}}
+{{- if .WorkloadEncryptedData}}
+workload: "{{ .WorkloadEncryptedData }}"
+{{- end}}
+{{- if .WorkloadEncryptedDataSignature}}
+envWorkloadSignature: "{{ .WorkloadEncryptedDataSignature }}"
+{{- end}}
+{{- if .AttestationEncryptedData}}
+attestationPublicKey: "{{ .AttestationEncryptedData }}"
+{{- end}}
+
