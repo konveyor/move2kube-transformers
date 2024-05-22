@@ -1,0 +1,15 @@
+{
+  "name": "learn-terraform-heroku",
+  "version": "1.0.0",
+  "description": "Learn Terraform Heroku - Demo Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Terraform Education",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg-promise": "^10.10.2"
+  }
+}
