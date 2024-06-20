@@ -1,0 +1,30 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Transformer
+metadata:
+  name: HelmChartGeneratorContainer
+  labels: 
+    move2kube.konveyor.io/built-in: false
+spec:
+  mode: "Container"
+  class: "Executable"
+  isolated: true
+  override:
+    matchLabels: 
+      move2kube.konveyor.io/built-in: "true"
+  directoryDetect:
+    levels: -1
+  consumes:
+    Service:
+      merge: false
+  config:
+    platforms: 
+      - "darwin"
+    directoryDetectCMD: ["./transformer", "detect", "M2K_DETECT_INPUT_PATH", "M2K_DETECT_OUTPUT_PATH"]
+    transformCMD: ["./transformer", "transform", "M2K_TRANSFORM_INPUT_PATH", "M2K_TRANSFORM_OUTPUT_PATH"]
+    container: 
+      image: containerizedtransformer:latest
+      workingDir: "/m2k/"
+      keepAliveCommand: ["tail", "-f", "/dev/null"]
+      build:
+        dockerfile: "Dockerfile"
+        context: "."
